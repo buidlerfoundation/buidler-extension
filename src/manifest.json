@@ -15,7 +15,7 @@
       "declarativeNetRequest"
     ],
     "host_permissions": [
-      "*://*.buidler.app/*"
+      "<all_urls>"
     ],
     "content_security_policy": {
       "extension_pages": "script-src 'self'; script-src-elem https://firebasestorage.googleapis.com; object-src 'self'"
