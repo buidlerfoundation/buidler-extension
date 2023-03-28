@@ -32,7 +32,11 @@ const updateRules = (
 
 chrome.cookies.get(
   { name: "_is_human", url: "https://bounties.gitcoin.co" },
-  (cookie) => updateRules(3, actionUpdateGitCoinReqHeader(cookie.value))
+  (cookie) => {
+    if (cookie && cookie.value) {
+      updateRules(3, actionUpdateGitCoinReqHeader(cookie.value))
+    }
+  }
 );
 
 chrome.webRequest.onHeadersReceived.addListener(
