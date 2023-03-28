@@ -34,7 +34,7 @@ chrome.cookies.get(
   { name: "_is_human", url: "https://bounties.gitcoin.co" },
   (cookie) => {
     if (cookie && cookie.value) {
-      updateRules(3, actionUpdateGitCoinReqHeader(cookie.value))
+      updateRules(3, actionUpdateGitCoinReqHeader(cookie.value));
     }
   }
 );
@@ -60,19 +60,6 @@ chrome.webRequest.onHeadersReceived.addListener(
           .map((el) => el.value?.split(" ")?.[0])
           ?.join(" ");
         updateRules(5, actionUpdateGithubReqHeader(cookieValue));
-        // const octo = responseHeaders?.find(
-        //   (el) => el.name === "set-cookie" && el.value?.includes("_octo=")
-        // )?.value;
-        // if (octo) {
-        //   chrome.cookies.set({url: "https://github.com", name: "_octo", value: getValueCookie(octo, '_octo=')})
-        // }
-        // chrome.cookies.getAll({url: "https://github.com", domain: "github.com"}).then(cookies => {
-        //   const octoCookie = cookies.find(el => el.name === "_octo")
-        //   if (octoCookie) {
-        //     cookieValue += ` _octo=${octoCookie.value};`
-        //   }
-        //   updateRules(5, actionUpdateGithubReqHeader(cookieValue));
-        // })
       }
     }
   },
@@ -81,3 +68,5 @@ chrome.webRequest.onHeadersReceived.addListener(
   },
   ["responseHeaders", "extraHeaders"]
 );
+
+updateRules();
