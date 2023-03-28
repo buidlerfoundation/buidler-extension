@@ -21,5 +21,9 @@
     ],
     "content_security_policy": {
       "extension_pages": "script-src 'self'; script-src-elem https://firebasestorage.googleapis.com; object-src 'self'"
-    }
+    },
+    "web_accessible_resources": [{
+      "resources": ["resources/icons/16x16.png"],
+      "matches": ["<all_urls>"]
+    }]
   }
