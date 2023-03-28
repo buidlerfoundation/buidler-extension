@@ -42,11 +42,10 @@ const rules: chrome.declarativeNetRequest.Rule[] = [
     priority: 1,
     action: {
       type: chrome.declarativeNetRequest.RuleActionType.MODIFY_HEADERS,
-      requestHeaders: [
+      responseHeaders: [
         {
-          operation: chrome.declarativeNetRequest.HeaderOperation.SET,
-          header: "cookie",
-          value: "",
+          operation: chrome.declarativeNetRequest.HeaderOperation.REMOVE,
+          header: "content-security-policy",
         },
       ],
     },
@@ -55,6 +54,80 @@ const rules: chrome.declarativeNetRequest.Rule[] = [
       resourceTypes: allResourceTypes,
     },
   },
+  {
+    id: 4,
+    priority: 1,
+    action: {
+      type: chrome.declarativeNetRequest.RuleActionType.MODIFY_HEADERS,
+      responseHeaders: [
+        {
+          operation: chrome.declarativeNetRequest.HeaderOperation.REMOVE,
+          header: "content-security-policy",
+        },
+      ],
+    },
+    condition: {
+      urlFilter: "https://github.com/*",
+      resourceTypes: allResourceTypes,
+    },
+  },
+  {
+    id: 5,
+    priority: 1,
+    action: {
+      type: chrome.declarativeNetRequest.RuleActionType.MODIFY_HEADERS,
+      responseHeaders: [
+        {
+          operation: chrome.declarativeNetRequest.HeaderOperation.REMOVE,
+          header: "content-security-policy",
+        },
+      ],
+    },
+    condition: {
+      urlFilter: "https://github.com/*",
+      resourceTypes: allResourceTypes,
+    },
+  },
 ];
+
+export const actionUpdateGitCoinReqHeader: (
+  value: string
+) => chrome.declarativeNetRequest.RuleAction = (value) => ({
+  type: chrome.declarativeNetRequest.RuleActionType.MODIFY_HEADERS,
+  requestHeaders: [
+    {
+      operation: chrome.declarativeNetRequest.HeaderOperation.SET,
+      header: "cookie",
+      value: `_is_human=${value}`,
+    },
+    {
+      operation: chrome.declarativeNetRequest.HeaderOperation.SET,
+      header: "referer",
+      value: "https://bounties.gitcoin.co/grants/4268/zkrollupsxyz",
+    },
+  ],
+  responseHeaders: [
+    {
+      operation: chrome.declarativeNetRequest.HeaderOperation.REMOVE,
+      header: "x-frame-options",
+    },
+    {
+      operation: chrome.declarativeNetRequest.HeaderOperation.REMOVE,
+      header: "content-security-policy",
+    },
+  ],
+});
+
+export const actionUpdateGithubReqHeader: (value: string) => chrome.declarativeNetRequest.RuleAction =
+  (value: string, octo?: string) => ({
+    type: chrome.declarativeNetRequest.RuleActionType.MODIFY_HEADERS,
+    requestHeaders: [
+      {
+        operation: chrome.declarativeNetRequest.HeaderOperation.SET,
+        header: "cookie",
+        value,
+      },
+    ],
+  });
 
 export default rules;
