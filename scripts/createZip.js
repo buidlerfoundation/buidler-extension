@@ -4,7 +4,7 @@ const packageJSON = require('../package.json');
 
 const SOURCE_DIR = 'build';
 const OUTPUT_DIR = 'dist';
-const ZIP_FILE = `${OUTPUT_DIR}/extension-${packageJSON.version}.zip`;
+const ZIP_FILE = `${OUTPUT_DIR}/buidler-browser-extension-${packageJSON.version}.zip`;
 
 if (!fs.existsSync(OUTPUT_DIR)) {
   fs.mkdirSync(OUTPUT_DIR);
