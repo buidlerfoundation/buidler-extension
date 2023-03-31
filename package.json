@@ -1,6 +1,6 @@
 {
   "name": "buidler-browser-extension",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "POC to modify headers using Manifest V3",
   "homepage": "https://buidler.app",
   "scripts": {

@@ -1,7 +1,7 @@
 {
     "name": "Buidler Airdrop Extension",
     "description": "An extension help airdrop hunter on Buidler",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "manifest_version": 3,
     "background": {
       "service_worker": "background.js"

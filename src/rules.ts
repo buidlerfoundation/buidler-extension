@@ -13,6 +13,10 @@ const rules: chrome.declarativeNetRequest.Rule[] = [
           operation: chrome.declarativeNetRequest.HeaderOperation.REMOVE,
           header: "x-frame-options",
         },
+        {
+          operation: chrome.declarativeNetRequest.HeaderOperation.REMOVE,
+          header: "content-security-policy",
+        },
       ],
     },
     condition: {
