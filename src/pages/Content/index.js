@@ -18,6 +18,7 @@ iframePlugin.style.bottom = '20px';
 iframePlugin.style.right = '20px';
 iframePlugin.style.borderRadius = '10px';
 iframePlugin.style.opacity = 0;
+iframePlugin.style.colorScheme = 'auto';
 iframePlugin.onload = () => {
   iframePlugin.style.opacity = 1;
 };
@@ -37,6 +38,7 @@ iframe.frameBorder = 'none';
 iframe.style.transition = 'transform 0.5s ease-out 0s';
 iframe.style.transform = 'translateX(0px)';
 iframe.style.boxShadow = '8px 8px 20px 0 #00000040';
+iframe.style.colorScheme = 'auto';
 iframe.onload = () => {};
 const toggle = () => {
   const frame = document.getElementById('buidler-panel-frame');
