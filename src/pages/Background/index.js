@@ -1,7 +1,24 @@
 import Caller from '../../api/Caller';
+import rules from './rules';
 
 console.log('This is the background page.');
 console.log('Put the background scripts here.');
+
+const updateRules = (id, newAction) => {
+  const newRules = rules.map((el) => {
+    if (el.id === id && newAction) {
+      return {
+        ...el,
+        action: newAction,
+      };
+    }
+    return el;
+  });
+  chrome.declarativeNetRequest.updateDynamicRules({
+    removeRuleIds: newRules.map((rule) => rule.id), // remove existing rules
+    addRules: newRules,
+  });
+};
 
 chrome.action.onClicked.addListener(async (tab) => {
   if (tab.url?.includes('http')) {
@@ -43,3 +60,5 @@ chrome.runtime.onMessage.addListener(async (msg, sender, response) => {
   }
   response();
 });
+
+updateRules();

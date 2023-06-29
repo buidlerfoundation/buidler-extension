@@ -60,7 +60,7 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
     const { externalRes, ottRes } = msg;
     const path =
       externalRes?.data?.render_type === 'bubble' ? 'plugin' : 'panel';
-    let pluginUrl = `https://beta.buidler.app/${path}?external_url=${window.location.href}`;
+    let pluginUrl = `https://staging.community.buidler.app/${path}?external_url=${window.location.href}`;
     if (ottRes?.data) {
       pluginUrl += `&ott=${ottRes?.data}`;
     }

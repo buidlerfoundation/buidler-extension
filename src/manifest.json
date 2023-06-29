@@ -10,7 +10,7 @@
   "icons": {
     "128": "icon-128.png"
   },
-  "permissions": ["cookies", "storage"],
+  "permissions": ["cookies", "storage", "declarativeNetRequest", "webRequest"],
   "host_permissions": ["<all_urls>"],
   "content_scripts": [
     {
