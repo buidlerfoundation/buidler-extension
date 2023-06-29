@@ -16,7 +16,11 @@ iframePlugin.style.position = 'fixed';
 iframePlugin.style.zIndex = '9000000000000000000';
 iframePlugin.style.bottom = '20px';
 iframePlugin.style.right = '20px';
-iframePlugin.onload = () => {};
+iframePlugin.style.borderRadius = '10px';
+iframePlugin.style.opacity = 0;
+iframePlugin.onload = () => {
+  iframePlugin.style.opacity = 1;
+};
 
 // iframe panel
 var iframe = document.createElement('iframe');
