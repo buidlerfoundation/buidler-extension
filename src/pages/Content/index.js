@@ -22,9 +22,10 @@ iframePlugin.onload = () => {};
 var iframe = document.createElement('iframe');
 iframe.id = 'buidler-panel-frame';
 iframe.style.height = 'calc(100% - 40px)';
+iframe.style.maxHeight = '1080px';
 iframe.style.width = '390px';
 iframe.style.position = 'fixed';
-iframe.style.top = '20px';
+iframe.style.bottom = '20px';
 iframe.style.right = '-390px';
 iframe.style.zIndex = '9000000000000000000';
 iframe.style.borderRadius = '10px';
@@ -59,7 +60,7 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
     const { externalRes, ottRes } = msg;
     const path =
       externalRes?.data?.render_type === 'bubble' ? 'plugin' : 'panel';
-    let pluginUrl = `https://staging.community.buidler.app/${path}?external_url=${window.location.href}`;
+    let pluginUrl = `https://beta.buidler.app/${path}?external_url=${window.location.href}`;
     if (ottRes?.data) {
       pluginUrl += `&ott=${ottRes?.data}`;
     }
@@ -80,13 +81,18 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
   }
 });
 
-chrome.runtime.sendMessage(
-  {
-    type: 'on-load',
-    url: window.location.href,
-  },
-  (callback) => {}
-);
+if (
+  !window.location.origin.includes('community.buidler.app') &&
+  !window.location.origin.includes('beta.buidler.app')
+) {
+  chrome.runtime.sendMessage(
+    {
+      type: 'on-load',
+      url: window.location.href,
+    },
+    (callback) => {}
+  );
+}
 
 window.addEventListener('message', (e) => {
   if (e.data.type === 'buidler-plugin-set-cookie') {
