@@ -16,7 +16,6 @@ iframePlugin.style.position = 'fixed';
 iframePlugin.style.zIndex = '9000000000000000000';
 iframePlugin.style.bottom = '20px';
 iframePlugin.style.right = '20px';
-iframePlugin.style.borderRadius = '10px';
 iframePlugin.style.opacity = 0;
 iframePlugin.style.colorScheme = 'auto';
 iframePlugin.onload = () => {
@@ -66,7 +65,7 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
     const { externalRes, ottRes } = msg;
     const path =
       externalRes?.data?.render_type === 'bubble' ? 'plugin' : 'panel';
-    let pluginUrl = `https://staging.community.buidler.app/${path}?external_url=${window.location.href}`;
+    let pluginUrl = `https://beta.buidler.app/${path}?external_url=${window.location.href}`;
     if (ottRes?.data) {
       pluginUrl += `&ott=${ottRes?.data}`;
     }
