@@ -1,6 +1,7 @@
 let loading = true;
 let panelOpen = false;
 const isMainUrl = window.location.pathname === '/';
+const bubbleHeight = isMainUrl ? '130px' : '165px';
 
 // main -> 110px
 // detail -> 145px
@@ -8,14 +9,14 @@ const isMainUrl = window.location.pathname === '/';
 // iframe plugin
 var iframePlugin = document.createElement('iframe');
 iframePlugin.id = 'buidler-plugin-frame';
-iframePlugin.style.height = isMainUrl ? '90px' : '125px';
+iframePlugin.style.height = bubbleHeight;
 iframePlugin.style.maxHeight = '1080px';
-iframePlugin.style.width = '390px';
+iframePlugin.style.width = '430px';
 iframePlugin.frameBorder = 'none';
 iframePlugin.style.position = 'fixed';
 iframePlugin.style.zIndex = '9000000000000000000';
-iframePlugin.style.bottom = '20px';
-iframePlugin.style.right = '20px';
+iframePlugin.style.bottom = '0px';
+iframePlugin.style.right = '0px';
 iframePlugin.style.opacity = 0;
 iframePlugin.style.colorScheme = 'auto';
 iframePlugin.onload = () => {
@@ -110,15 +111,15 @@ window.addEventListener('message', (e) => {
     panelOpen = !panelOpen;
   }
   if (e.data === 'open-plugin') {
-    iframePlugin.style.height = 'calc(100vh - 40px)';
+    iframePlugin.style.height = '100vh';
   }
   if (e.data === 'close-plugin') {
-    iframePlugin.style.height = isMainUrl ? '90px' : '125px';
+    iframePlugin.style.height = bubbleHeight;
   }
   if (e.data === 'open-plugin-menu') {
-    iframePlugin.style.height = '520px';
+    iframePlugin.style.height = '580px';
   }
   if (e.data === 'close-plugin-menu') {
-    iframePlugin.style.height = '90px';
+    iframePlugin.style.height = '130px';
   }
 });
