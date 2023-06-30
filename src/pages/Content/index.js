@@ -63,9 +63,8 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
     response('toggle!!!');
   }
   if (msg?.type === 'on-inject-iframe') {
-    const { externalRes, ottRes } = msg;
-    const path =
-      externalRes?.data?.render_type === 'bubble' ? 'plugin' : 'panel';
+    const { ottRes } = msg;
+    const path = 'plugin';
     let pluginUrl = `https://beta.buidler.app/${path}?external_url=${window.location.href}`;
     if (ottRes?.data) {
       pluginUrl += `&ott=${ottRes?.data}`;

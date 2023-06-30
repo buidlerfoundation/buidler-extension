@@ -36,12 +36,11 @@ chrome.action.onClicked.addListener(async (tab) => {
 
 chrome.runtime.onMessage.addListener(async (msg, sender, response) => {
   if (msg.type === 'on-load') {
-    const externalRes = await Caller.get(`external?url=${msg.url}`);
     const ottRes = await Caller.get('authentication/ott');
     if (sender?.tab?.id) {
       chrome.tabs.sendMessage(
         sender?.tab?.id,
-        { type: 'on-inject-iframe', externalRes, ottRes },
+        { type: 'on-inject-iframe', ottRes },
         (resCallback) => {
           // handle call back
         }
