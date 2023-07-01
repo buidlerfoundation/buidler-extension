@@ -49,7 +49,7 @@ chrome.runtime.onMessage.addListener(async (msg, sender, response) => {
   }
   if (msg.type === 'buidler-plugin-set-cookie') {
     chrome.cookies.set({
-      url: 'https://staging.community.buidler.app/',
+      url: 'https://beta.buidler.app/',
       name: msg.key,
       value: `${msg.value}`,
       sameSite: 'no_restriction',
