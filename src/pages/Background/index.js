@@ -60,4 +60,19 @@ chrome.runtime.onMessage.addListener(async (msg, sender, response) => {
   response();
 });
 
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (changeInfo.url) {
+    chrome.tabs.sendMessage(
+      tabId,
+      {
+        type: 'on-tab-update',
+        url: changeInfo.url,
+      },
+      (resCallback) => {
+        // handle call back
+      }
+    );
+  }
+});
+
 updateRules();

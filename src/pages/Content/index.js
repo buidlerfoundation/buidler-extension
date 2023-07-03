@@ -1,7 +1,10 @@
 let loading = true;
 let panelOpen = false;
-const isMainUrl = window.location.pathname === '/';
-const bubbleHeight = isMainUrl ? '130px' : '165px';
+
+const getBubbleHeight = () => {
+  const isMainUrl = window.location.pathname === '/';
+  return isMainUrl ? '130px' : '165px';
+};
 
 // main -> 110px
 // detail -> 145px
@@ -9,7 +12,7 @@ const bubbleHeight = isMainUrl ? '130px' : '165px';
 // iframe plugin
 var iframePlugin = document.createElement('iframe');
 iframePlugin.id = 'buidler-plugin-frame';
-iframePlugin.style.height = bubbleHeight;
+iframePlugin.style.height = getBubbleHeight();
 iframePlugin.style.maxHeight = '1080px';
 iframePlugin.style.width = '430px';
 iframePlugin.frameBorder = 'none';
@@ -51,7 +54,7 @@ const toggle = () => {
     }
   }
   if (pluginFrame) {
-    iframePlugin?.contentWindow?.postMessage?.('toggle-plugin', '*');
+    iframePlugin?.contentWindow?.postMessage?.({ type: 'toggle-plugin' }, '*');
   }
 };
 chrome.runtime.onMessage.addListener((msg, sender, response) => {
@@ -84,6 +87,17 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
     });
     loading = false;
   }
+  if (msg?.type === 'on-tab-update') {
+    const { url } = msg;
+    const pluginFrame = document.getElementById('buidler-plugin-frame');
+    if (pluginFrame) {
+      iframePlugin?.contentWindow?.postMessage?.(
+        { type: 'update-external', payload: url },
+        '*'
+      );
+    }
+    response();
+  }
 });
 
 if (
@@ -113,7 +127,7 @@ window.addEventListener('message', (e) => {
     iframePlugin.style.height = '100vh';
   }
   if (e.data === 'close-plugin') {
-    iframePlugin.style.height = bubbleHeight;
+    iframePlugin.style.height = getBubbleHeight();
   }
   if (e.data === 'open-plugin-menu') {
     iframePlugin.style.height = '580px';
