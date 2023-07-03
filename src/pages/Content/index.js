@@ -91,6 +91,9 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
     const { url } = msg;
     const pluginFrame = document.getElementById('buidler-plugin-frame');
     if (pluginFrame) {
+      if (iframePlugin.style.height !== '100vh') {
+        iframePlugin.style.height = getBubbleHeight();
+      }
       iframePlugin?.contentWindow?.postMessage?.(
         { type: 'update-external', payload: url },
         '*'
