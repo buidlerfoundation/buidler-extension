@@ -35,6 +35,7 @@ chrome.action.onClicked.addListener(async (tab) => {
 });
 
 chrome.runtime.onMessage.addListener(async (msg, sender, response) => {
+  response();
   if (msg.type === 'on-load') {
     const ottRes = await Caller.get('authentication/ott');
     if (sender?.tab?.id) {
@@ -57,7 +58,6 @@ chrome.runtime.onMessage.addListener(async (msg, sender, response) => {
     });
     chrome.storage.local.set({ [msg.key]: `${msg.value}` });
   }
-  response();
 });
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {

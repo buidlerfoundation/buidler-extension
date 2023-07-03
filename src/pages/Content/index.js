@@ -58,12 +58,12 @@ const toggle = () => {
   }
 };
 chrome.runtime.onMessage.addListener((msg, sender, response) => {
+  response();
   if (msg?.type === 'toggle-buidler-extension') {
     if (!loading) {
       toggle();
       panelOpen = !panelOpen;
     }
-    response('toggle!!!');
   }
   if (msg?.type === 'on-inject-iframe') {
     const { ottRes } = msg;
@@ -99,7 +99,6 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
         '*'
       );
     }
-    response();
   }
 });
 
