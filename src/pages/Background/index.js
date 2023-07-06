@@ -21,6 +21,7 @@ const updateRules = (id, newAction) => {
 };
 
 chrome.action.onClicked.addListener(async (tab) => {
+  chrome.webNavigation.getFrame({});
   if (tab.url?.includes('http')) {
     // const res = await Caller.get('authentication/ott');
     chrome.tabs.sendMessage(
@@ -61,6 +62,23 @@ chrome.runtime.onMessage.addListener(async (msg, sender, response) => {
 });
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (changeInfo.status === 'loading') {
+    chrome.webNavigation.getAllFrames({ tabId: tab.id }, (e) => {
+      const frame = e.find((el) => el.parentFrameId === 0);
+      if (frame) {
+        chrome.tabs.sendMessage(
+          tabId,
+          {
+            type: 'on-frame-update',
+            frame,
+          },
+          (resCallback) => {
+            // handle call back
+          }
+        );
+      }
+    });
+  }
   if (changeInfo.url) {
     chrome.tabs.sendMessage(
       tabId,

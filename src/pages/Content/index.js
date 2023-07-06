@@ -100,11 +100,23 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
       );
     }
   }
+  if (msg?.type === 'on-frame-update') {
+    const { frame } = msg;
+    const currentIframe = document.getElementById('buidler-iframe');
+    if (currentIframe) {
+      const url = new URL(currentIframe.src);
+      const newUrl = new URL(frame.url);
+      if (frame.url?.includes(url.origin) && newUrl.pathname !== url.pathname) {
+        window.postMessage({ type: 'frame-update', frame }, '*');
+      }
+    }
+  }
 });
 
 if (
   !window.location.origin.includes('community.buidler.app') &&
-  !window.location.origin.includes('beta.buidler.app')
+  !window.location.origin.includes('beta.buidler.app') &&
+  !window.location.origin.includes('localhost')
 ) {
   chrome.runtime.sendMessage(
     {
