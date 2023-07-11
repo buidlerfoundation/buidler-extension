@@ -104,11 +104,7 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
     const { frame } = msg;
     const currentIframe = document.getElementById('buidler-iframe');
     if (currentIframe) {
-      const url = new URL(currentIframe.src);
-      const newUrl = new URL(frame.url);
-      if (frame.url?.includes(url.origin) && newUrl.pathname !== url.pathname) {
-        window.postMessage({ type: 'frame-update', frame }, '*');
-      }
+      window.postMessage({ type: 'frame-update', frame }, '*');
     }
   }
 });
