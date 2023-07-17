@@ -64,7 +64,11 @@ chrome.runtime.onMessage.addListener(async (msg, sender, response) => {
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (changeInfo.status === 'loading') {
     chrome.webNavigation.getAllFrames({ tabId: tab.id }, (e) => {
-      const frame = e.find((el) => el.parentFrameId === 0);
+      const frame = e.find(
+        (el) =>
+          el.parentFrameId === 0 &&
+          !el.url.includes('https://verify.walletconnect.com')
+      );
       if (frame) {
         chrome.tabs.sendMessage(
           tabId,
