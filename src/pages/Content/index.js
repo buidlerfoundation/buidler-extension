@@ -1,5 +1,6 @@
 let loading = true;
 let panelOpen = false;
+let autoOffSetting = false;
 
 const getBubbleHeight = () => {
   const isMainUrl = window.location.pathname === '/';
@@ -22,6 +23,7 @@ iframePlugin.style.bottom = '0px';
 iframePlugin.style.right = '0px';
 iframePlugin.style.opacity = 0;
 iframePlugin.style.colorScheme = 'auto';
+iframePlugin.style.display = 'none';
 iframePlugin.onload = () => {
   iframePlugin.style.opacity = 1;
 };
@@ -54,7 +56,20 @@ const toggle = () => {
     }
   }
   if (pluginFrame) {
-    iframePlugin?.contentWindow?.postMessage?.({ type: 'toggle-plugin' }, '*');
+    if (iframePlugin.style.display === 'none') {
+      iframePlugin.style.display = 'block';
+      if (iframePlugin.style.height !== '100vh') {
+        iframePlugin?.contentWindow?.postMessage?.(
+          { type: 'toggle-plugin' },
+          '*'
+        );
+      }
+    } else {
+      iframePlugin?.contentWindow?.postMessage?.(
+        { type: 'toggle-plugin' },
+        '*'
+      );
+    }
   }
 };
 chrome.runtime.onMessage.addListener((msg, sender, response) => {
@@ -66,12 +81,13 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
     }
   }
   if (msg?.type === 'on-inject-iframe') {
-    const { ottRes } = msg;
+    const { ottRes, autoOff } = msg;
+    autoOffSetting = autoOff === 'true';
     const path = 'plugin';
-    let pluginUrl = `https://beta.buidler.app/${path}?external_url=${window.location.href}`;
-    if (ottRes?.data) {
-      pluginUrl += `&ott=${ottRes?.data}`;
-    }
+    const baseUrl = 'https://beta.buidler.app';
+    const pluginUrl = `${baseUrl}/${path}?external_url=${
+      window.location.href
+    }&ott=${ottRes?.data || ''}&auto_off=${autoOff || ''}`;
     if (path === 'plugin') {
       iframePlugin.src = pluginUrl;
       document.body.appendChild(iframePlugin);
@@ -129,6 +145,14 @@ window.addEventListener('message', (e) => {
       // handle call back
     });
   }
+  if (e.data === 'show-plugin') {
+    if (!autoOffSetting) {
+      iframePlugin.style.display = 'block';
+    }
+  }
+  if (e.data === 'hide-plugin') {
+    iframePlugin.style.display = 'none';
+  }
   if (e.data === 'toggle-panel') {
     toggle();
     panelOpen = !panelOpen;
@@ -140,9 +164,128 @@ window.addEventListener('message', (e) => {
     iframePlugin.style.height = getBubbleHeight();
   }
   if (e.data === 'open-plugin-menu') {
-    iframePlugin.style.height = '580px';
+    iframePlugin.style.height = '650px';
   }
   if (e.data === 'close-plugin-menu') {
     iframePlugin.style.height = '130px';
   }
 });
+
+// highlight
+
+// var selectionMenu = document.createElement('div');
+// selectionMenu.id = 'selection-menu';
+
+// function getParentParagraph(node) {
+//   if (!node) return null;
+//   if (node?.nodeName === 'P') {
+//     return node;
+//   } else {
+//     return getParentParagraph(node?.parentNode);
+//   }
+// }
+
+// function getTextOffset(parentContent, node, offset) {
+//   return parentContent.indexOf(node.nodeValue) + offset;
+// }
+
+// document.onmouseup = (e) => {
+//   const selection = window.getSelection();
+//   const p1 = getParentParagraph(selection.anchorNode);
+//   const p2 = getParentParagraph(selection.focusNode);
+//   if (p1 && p2 && p1.innerText === p2.innerText) {
+//     const { layerX, layerY } = e;
+//     const offset1 = getTextOffset(
+//       p1.innerText,
+//       selection.anchorNode,
+//       selection.anchorOffset
+//     );
+//     const offset2 = getTextOffset(
+//       p1.innerText,
+//       selection.focusNode,
+//       selection.focusOffset
+//     );
+//     const startOffset = Math.min(offset1, offset2);
+//     const endOffset = Math.max(offset1, offset2);
+//     const str = p1.innerText.substring(startOffset, endOffset);
+//     const parentElement = [...document.querySelectorAll('p')].find(
+//       (el) => el.innerText === p1.innerText
+//     );
+//     const textNode1 = document.createTextNode(
+//       p1.innerText?.substring(0, startOffset)
+//     );
+//     const textNode2 = document.createTextNode(
+//       p1.innerText?.substring(endOffset)
+//     );
+//     const spanNode = document.createElement('span');
+//     spanNode.style.background = 'red';
+//     spanNode.innerText = p1.innerText?.substring(startOffset, endOffset);
+//     parentElement.replaceChildren([]);
+//     parentElement.appendChild(textNode1);
+//     parentElement.appendChild(spanNode);
+//     parentElement.appendChild(textNode2);
+//     // let start = 0;
+//     // parentElement?.childNodes?.forEach((node, index) => {
+//     //   const content = node.textContent || node.innerText;
+//     //   const length = content.length;
+//     //   const end = start + length;
+//     //   // if (start >= startOffset && end <= endOffset) {
+//     //   //   const spanNode = document.createElement('span');
+//     //   //   spanNode.innerText = content;
+//     //   //   spanNode.style.background = 'red';
+//     //   //   node.replaceWith(spanNode);
+//     //   // } else if (start <= startOffset && end >= endOffset) {
+
+//     //   // }
+//     //   // console.log('XXX: ', node, index, start, end);
+//     //   const textNode1 = document.createTextNode(
+//     //     content?.substring(0, startOffset - start)
+//     //   );
+//     //   const textNode2 = document.createTextNode(
+//     //     content?.substring(end - endOffset)
+//     //   );
+//     //   const spanNode = document.createElement('span');
+//     //   spanNode.style.background = 'red';
+//     //   spanNode.innerText = content?.substring(
+//     //     startOffset - start,
+//     //     end - endOffset
+//     //   );
+//     //   start = end;
+//     // });
+//     console.log(
+//       parentElement?.childNodes,
+//       selection,
+//       startOffset,
+//       endOffset,
+//       str
+//     );
+//     // const nodeValue = selection?.focusNode?.nodeValue;
+//     // const { anchorOffset, focusOffset } = selection;
+//     // const startOffset = Math.min(anchorOffset, focusOffset);
+//     // const endOffset = Math.max(anchorOffset, focusOffset);
+//     // const selectionValue = nodeValue?.substring(startOffset, endOffset);
+//     // const selectedElement = [...parentElement.childNodes].find(
+//     //   (el) => el.nodeName === '#text' && el.nodeValue === nodeValue
+//     // );
+//     // const textNode1 = document.createTextNode(
+//     //   nodeValue?.substring(0, startOffset)
+//     // );
+//     // const textNode2 = document.createTextNode(nodeValue?.substring(endOffset));
+//     // const spanNode = document.createElement('span');
+//     // spanNode.style.background = 'red';
+//     // spanNode.innerText = selectionValue;
+//     // parentElement.insertBefore(textNode1, selectedElement);
+//     // parentElement.insertBefore(spanNode, selectedElement);
+//     // parentElement.insertBefore(textNode2, selectedElement);
+//     // parentElement.removeChild(selectedElement);
+//     // console.log(
+//     //   selection,
+//     //   layerX,
+//     //   layerY,
+//     //   startOffset,
+//     //   endOffset,
+//     //   selectionValue,
+//     //   selectedElement
+//     // );
+//   }
+// };

@@ -1,8 +1,7 @@
 import Caller from '../../api/Caller';
 import rules from './rules';
 
-console.log('This is the background page.');
-console.log('Put the background scripts here.');
+const autoOffKey = 'Buidler_auto_off_plugin';
 
 const updateRules = (id, newAction) => {
   const newRules = rules.map((el) => {
@@ -21,7 +20,6 @@ const updateRules = (id, newAction) => {
 };
 
 chrome.action.onClicked.addListener(async (tab) => {
-  chrome.webNavigation.getFrame({});
   if (tab.url?.includes('http')) {
     // const res = await Caller.get('authentication/ott');
     chrome.tabs.sendMessage(
@@ -39,10 +37,12 @@ chrome.runtime.onMessage.addListener(async (msg, sender, response) => {
   response();
   if (msg.type === 'on-load') {
     const ottRes = await Caller.get('authentication/ott');
+    const storageAutoOff = await chrome.storage.local.get(autoOffKey);
+    const autoOff = storageAutoOff[autoOffKey];
     if (sender?.tab?.id) {
       chrome.tabs.sendMessage(
         sender?.tab?.id,
-        { type: 'on-inject-iframe', ottRes },
+        { type: 'on-inject-iframe', ottRes, autoOff },
         (resCallback) => {
           // handle call back
         }
