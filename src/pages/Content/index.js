@@ -167,7 +167,7 @@ window.addEventListener('message', (e) => {
     iframePlugin.style.height = '650px';
   }
   if (e.data === 'close-plugin-menu') {
-    iframePlugin.style.height = '130px';
+    iframePlugin.style.height = getBubbleHeight();
   }
 });
 
