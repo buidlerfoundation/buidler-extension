@@ -95,12 +95,6 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
       iframe.src = pluginUrl;
       document.body.appendChild(iframe);
     }
-    document.addEventListener('click', function (e) {
-      if (panelOpen) {
-        iframe.style.transform = 'translateX(0px)';
-        panelOpen = false;
-      }
-    });
     loading = false;
   }
   if (msg?.type === 'on-tab-update') {
@@ -189,103 +183,84 @@ window.addEventListener('message', (e) => {
 //   return parentContent.indexOf(node.nodeValue) + offset;
 // }
 
+// document.addEventListener('click', function (e) {
+//   if (panelOpen) {
+//     iframe.style.transform = 'translateX(0px)';
+//     panelOpen = false;
+//   }
+// });
+
 // document.onmouseup = (e) => {
 //   const selection = window.getSelection();
-//   const p1 = getParentParagraph(selection.anchorNode);
-//   const p2 = getParentParagraph(selection.focusNode);
-//   if (p1 && p2 && p1.innerText === p2.innerText) {
-//     const { layerX, layerY } = e;
-//     const offset1 = getTextOffset(
-//       p1.innerText,
-//       selection.anchorNode,
-//       selection.anchorOffset
-//     );
-//     const offset2 = getTextOffset(
-//       p1.innerText,
-//       selection.focusNode,
-//       selection.focusOffset
-//     );
-//     const startOffset = Math.min(offset1, offset2);
-//     const endOffset = Math.max(offset1, offset2);
-//     const str = p1.innerText.substring(startOffset, endOffset);
-//     const parentElement = [...document.querySelectorAll('p')].find(
-//       (el) => el.innerText === p1.innerText
-//     );
-//     const textNode1 = document.createTextNode(
-//       p1.innerText?.substring(0, startOffset)
-//     );
-//     const textNode2 = document.createTextNode(
-//       p1.innerText?.substring(endOffset)
-//     );
-//     const spanNode = document.createElement('span');
-//     spanNode.style.background = 'red';
-//     spanNode.innerText = p1.innerText?.substring(startOffset, endOffset);
-//     parentElement.replaceChildren([]);
-//     parentElement.appendChild(textNode1);
-//     parentElement.appendChild(spanNode);
-//     parentElement.appendChild(textNode2);
-//     // let start = 0;
-//     // parentElement?.childNodes?.forEach((node, index) => {
-//     //   const content = node.textContent || node.innerText;
-//     //   const length = content.length;
-//     //   const end = start + length;
-//     //   // if (start >= startOffset && end <= endOffset) {
-//     //   //   const spanNode = document.createElement('span');
-//     //   //   spanNode.innerText = content;
-//     //   //   spanNode.style.background = 'red';
-//     //   //   node.replaceWith(spanNode);
-//     //   // } else if (start <= startOffset && end >= endOffset) {
-
-//     //   // }
-//     //   // console.log('XXX: ', node, index, start, end);
-//     //   const textNode1 = document.createTextNode(
-//     //     content?.substring(0, startOffset - start)
-//     //   );
-//     //   const textNode2 = document.createTextNode(
-//     //     content?.substring(end - endOffset)
-//     //   );
-//     //   const spanNode = document.createElement('span');
-//     //   spanNode.style.background = 'red';
-//     //   spanNode.innerText = content?.substring(
-//     //     startOffset - start,
-//     //     end - endOffset
-//     //   );
-//     //   start = end;
-//     // });
-//     console.log(
-//       parentElement?.childNodes,
-//       selection,
-//       startOffset,
-//       endOffset,
-//       str
-//     );
-//     // const nodeValue = selection?.focusNode?.nodeValue;
-//     // const { anchorOffset, focusOffset } = selection;
-//     // const startOffset = Math.min(anchorOffset, focusOffset);
-//     // const endOffset = Math.max(anchorOffset, focusOffset);
-//     // const selectionValue = nodeValue?.substring(startOffset, endOffset);
-//     // const selectedElement = [...parentElement.childNodes].find(
-//     //   (el) => el.nodeName === '#text' && el.nodeValue === nodeValue
-//     // );
-//     // const textNode1 = document.createTextNode(
-//     //   nodeValue?.substring(0, startOffset)
-//     // );
-//     // const textNode2 = document.createTextNode(nodeValue?.substring(endOffset));
-//     // const spanNode = document.createElement('span');
-//     // spanNode.style.background = 'red';
-//     // spanNode.innerText = selectionValue;
-//     // parentElement.insertBefore(textNode1, selectedElement);
-//     // parentElement.insertBefore(spanNode, selectedElement);
-//     // parentElement.insertBefore(textNode2, selectedElement);
-//     // parentElement.removeChild(selectedElement);
-//     // console.log(
-//     //   selection,
-//     //   layerX,
-//     //   layerY,
-//     //   startOffset,
-//     //   endOffset,
-//     //   selectionValue,
-//     //   selectedElement
-//     // );
+//   if (selection.toString()) {
+//     console.log('XXX: ', e);
+//     const p1 = getParentParagraph(selection.anchorNode);
+//     const p2 = getParentParagraph(selection.focusNode);
+//     if (p1 && p2 && p1.innerText === p2.innerText) {
+//       const { layerX, layerY } = e;
+//       const offset1 = getTextOffset(
+//         p1.innerText,
+//         selection.anchorNode,
+//         selection.anchorOffset
+//       );
+//       const offset2 = getTextOffset(
+//         p1.innerText,
+//         selection.focusNode,
+//         selection.focusOffset
+//       );
+//       const startOffset = Math.min(offset1, offset2);
+//       const endOffset = Math.max(offset1, offset2);
+//       const str = p1.innerText.substring(startOffset, endOffset);
+//       const parentElement = [...document.querySelectorAll('p')].find(
+//         (el) => el.innerText === p1.innerText
+//       );
+//       const newParent = parentElement.cloneNode();
+//       let start = 0;
+//       parentElement?.childNodes?.forEach((node, index) => {
+//         const content = node.textContent || node.innerText;
+//         const length = content.length;
+//         const end = start + length;
+//         const t1 = content?.substring(
+//           0,
+//           startOffset < start ? 0 : startOffset - start
+//         );
+//         const t2 = content?.substring(
+//           startOffset < start ? 0 : startOffset - start,
+//           endOffset - start
+//         );
+//         const t3 = content?.substring(endOffset - start);
+//         if (node.childNodes?.length > 0) {
+//           const newNode = node.cloneNode();
+//           if (t1) {
+//             newNode.appendChild(document.createTextNode(t1));
+//           }
+//           if (t2) {
+//             const markNode = document.createElement('mark');
+//             markNode.setAttribute('data-highlight', true);
+//             markNode.innerText = t2;
+//             newNode.appendChild(markNode);
+//           }
+//           if (t3) {
+//             newNode.appendChild(document.createTextNode(t3));
+//           }
+//           newParent.appendChild(newNode);
+//         } else {
+//           if (t1) {
+//             newParent.appendChild(document.createTextNode(t1));
+//           }
+//           if (t2) {
+//             const markNode = document.createElement('mark');
+//             markNode.setAttribute('data-highlight', true);
+//             markNode.innerText = t2;
+//             newParent.appendChild(markNode);
+//           }
+//           if (t3) {
+//             newParent.appendChild(document.createTextNode(t3));
+//           }
+//         }
+//         start = end;
+//       });
+//       parentElement.replaceWith(newParent);
+//     }
 //   }
 // };
