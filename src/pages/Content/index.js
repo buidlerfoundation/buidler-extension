@@ -11,22 +11,25 @@ const getBubbleHeight = () => {
 // detail -> 145px
 
 // iframe plugin
+const existed = !!document.getElementById('buidler-plugin-frame');
 var iframePlugin = document.createElement('iframe');
-iframePlugin.id = 'buidler-plugin-frame';
-iframePlugin.style.height = getBubbleHeight();
-iframePlugin.style.maxHeight = '1080px';
-iframePlugin.style.width = '430px';
-iframePlugin.frameBorder = 'none';
-iframePlugin.style.position = 'fixed';
-iframePlugin.style.zIndex = '9000000000000000000';
-iframePlugin.style.bottom = '0px';
-iframePlugin.style.right = '0px';
-iframePlugin.style.opacity = 0;
-iframePlugin.style.colorScheme = 'auto';
-iframePlugin.style.display = 'none';
-iframePlugin.onload = () => {
-  iframePlugin.style.opacity = 1;
-};
+if (!existed) {
+  iframePlugin.id = 'buidler-plugin-frame';
+  iframePlugin.style.height = getBubbleHeight();
+  iframePlugin.style.maxHeight = '1080px';
+  iframePlugin.style.width = '430px';
+  iframePlugin.frameBorder = 'none';
+  iframePlugin.style.position = 'fixed';
+  iframePlugin.style.zIndex = '9000000000000000000';
+  iframePlugin.style.bottom = '0px';
+  iframePlugin.style.right = '0px';
+  iframePlugin.style.opacity = 0;
+  iframePlugin.style.colorScheme = 'auto';
+  iframePlugin.style.display = 'none';
+  iframePlugin.onload = () => {
+    iframePlugin.style.opacity = 1;
+  };
+}
 
 // iframe panel
 var iframe = document.createElement('iframe');
@@ -56,26 +59,23 @@ const toggle = () => {
     }
   }
   if (pluginFrame) {
-    if (iframePlugin.style.display === 'none') {
-      iframePlugin.style.display = 'block';
-      if (iframePlugin.style.height !== '100vh') {
-        iframePlugin?.contentWindow?.postMessage?.(
+    if (pluginFrame.style.display === 'none') {
+      pluginFrame.style.display = 'block';
+      if (pluginFrame.style.height !== '100vh') {
+        pluginFrame?.contentWindow?.postMessage?.(
           { type: 'toggle-plugin' },
           '*'
         );
       }
     } else {
-      iframePlugin?.contentWindow?.postMessage?.(
-        { type: 'toggle-plugin' },
-        '*'
-      );
+      pluginFrame?.contentWindow?.postMessage?.({ type: 'toggle-plugin' }, '*');
     }
   }
 };
 chrome.runtime.onMessage.addListener((msg, sender, response) => {
   response();
   if (msg?.type === 'toggle-buidler-extension') {
-    if (!loading) {
+    if (!loading || existed) {
       toggle();
       panelOpen = !panelOpen;
     }
@@ -101,10 +101,10 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
     const { url } = msg;
     const pluginFrame = document.getElementById('buidler-plugin-frame');
     if (pluginFrame) {
-      if (iframePlugin.style.height !== '100vh') {
-        iframePlugin.style.height = getBubbleHeight();
+      if (pluginFrame.style.height !== '100vh') {
+        pluginFrame.style.height = getBubbleHeight();
       }
-      iframePlugin?.contentWindow?.postMessage?.(
+      pluginFrame?.contentWindow?.postMessage?.(
         { type: 'update-external', payload: url },
         '*'
       );
@@ -122,7 +122,8 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
 if (
   !window.location.origin.includes('community.buidler.app') &&
   !window.location.origin.includes('beta.buidler.app') &&
-  !window.location.origin.includes('localhost')
+  !window.location.origin.includes('localhost') &&
+  !existed
 ) {
   chrome.runtime.sendMessage(
     {
@@ -134,34 +135,37 @@ if (
 }
 
 window.addEventListener('message', (e) => {
+  const pluginFrame = document.getElementById('buidler-plugin-frame');
   if (e.data.type === 'buidler-plugin-set-cookie') {
     chrome.runtime.sendMessage(e.data, (resCallback) => {
       // handle call back
     });
   }
-  if (e.data === 'show-plugin') {
-    if (!autoOffSetting) {
-      iframePlugin.style.display = 'block';
+  if (pluginFrame) {
+    if (e.data === 'show-plugin') {
+      if (!autoOffSetting) {
+        pluginFrame.style.display = 'block';
+      }
     }
-  }
-  if (e.data === 'hide-plugin') {
-    iframePlugin.style.display = 'none';
+    if (e.data === 'hide-plugin') {
+      pluginFrame.style.display = 'none';
+    }
+    if (e.data === 'open-plugin') {
+      pluginFrame.style.height = '100vh';
+    }
+    if (e.data === 'close-plugin') {
+      pluginFrame.style.height = getBubbleHeight();
+    }
+    if (e.data === 'open-plugin-menu') {
+      pluginFrame.style.height = '650px';
+    }
+    if (e.data === 'close-plugin-menu') {
+      pluginFrame.style.height = getBubbleHeight();
+    }
   }
   if (e.data === 'toggle-panel') {
     toggle();
     panelOpen = !panelOpen;
-  }
-  if (e.data === 'open-plugin') {
-    iframePlugin.style.height = '100vh';
-  }
-  if (e.data === 'close-plugin') {
-    iframePlugin.style.height = getBubbleHeight();
-  }
-  if (e.data === 'open-plugin-menu') {
-    iframePlugin.style.height = '650px';
-  }
-  if (e.data === 'close-plugin-menu') {
-    iframePlugin.style.height = getBubbleHeight();
   }
 });
 
