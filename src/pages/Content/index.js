@@ -95,6 +95,9 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
       iframe.src = pluginUrl;
       document.body.appendChild(iframe);
     }
+    if (!autoOffSetting) {
+      iframePlugin.style.display = 'block';
+    }
     loading = false;
   }
   if (msg?.type === 'on-tab-update') {

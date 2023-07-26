@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "Buidler Extension",
-  "description": "Buidler Extension",
+  "name": "Buidler - One extension. Any communities.",
+  "description": "Dive into communities right on the sites you're browsing, instantly. Enjoy the freedom of communication now!",
   "options_page": "options.html",
   "background": { "service_worker": "background.bundle.js" },
   "action": {
