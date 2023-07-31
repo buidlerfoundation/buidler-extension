@@ -44,12 +44,15 @@ try {
       });
       chrome.storage.local.set({ [msg.key]: `${msg.value}` });
     }
+    if (msg.type === 'buidler-plugin-clear-cookie') {
+      chrome.storage.local.clear();
+    }
   });
 
   chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     if (changeInfo.status === 'loading') {
       chrome.webNavigation.getAllFrames({ tabId: tab.id }, (e) => {
-        const frame = e.find(
+        const frame = e?.find(
           (el) =>
             el.parentFrameId === 0 &&
             !el.url.includes('https://verify.walletconnect.com')

@@ -156,7 +156,10 @@ if (
 
 window.addEventListener('message', (e) => {
   const pluginFrame = document.getElementById('buidler-plugin-frame');
-  if (e.data.type === 'buidler-plugin-set-cookie') {
+  if (
+    e.data.type === 'buidler-plugin-set-cookie' ||
+    e.data.type === 'buidler-plugin-clear-cookie'
+  ) {
     chrome.runtime.sendMessage(e.data, (resCallback) => {
       // handle call back
     });
