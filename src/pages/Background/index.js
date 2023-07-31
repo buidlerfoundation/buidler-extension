@@ -85,20 +85,7 @@ try {
   console.log(error);
 }
 
-const updateRules = (id, newAction) => {
-  const newRules = rules.map((el) => {
-    if (el.id === id && newAction) {
-      return {
-        ...el,
-        action: newAction,
-      };
-    }
-    return el;
-  });
-  chrome.declarativeNetRequest.updateDynamicRules({
-    removeRuleIds: newRules.map((rule) => rule.id), // remove existing rules
-    addRules: newRules,
-  });
-};
-
-updateRules();
+chrome.declarativeNetRequest.updateDynamicRules({
+  removeRuleIds: rules.map((rule) => rule.id), // remove existing rules
+  addRules: rules,
+});

@@ -1,0 +1,33 @@
+.loading-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 390px;
+  z-index: 9000000000000000000;
+  color-scheme: auto;
+  background: #191919;
+  display: flex;
+  border-radius: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader {
+  border: 2px solid #191919;
+  border-top: 2px solid #727272;
+  border-right: 2px solid #727272;
+  border-bottom: 2px solid #727272;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

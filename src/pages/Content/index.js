@@ -7,8 +7,20 @@ const getBubbleHeight = () => {
   return isMainUrl ? '130px' : '165px';
 };
 
-// main -> 110px
-// detail -> 145px
+const getLoadingHeight = () => {
+  const isMainUrl = window.location.pathname === '/';
+  return isMainUrl ? '90px' : '137px';
+};
+
+// main -> 90px
+// detail -> 137px
+
+// plugin loading
+var loadingPlugin = document.createElement('div');
+loadingPlugin.className = 'loading-container';
+loadingPlugin.style.height = getLoadingHeight();
+var loader = document.createElement('div');
+loader.className = 'loader';
 
 // iframe plugin
 const existed = !!document.getElementById('buidler-plugin-frame');
@@ -28,6 +40,9 @@ if (!existed) {
   iframePlugin.style.display = 'none';
   iframePlugin.onload = () => {
     iframePlugin.style.opacity = 1;
+    setTimeout(() => {
+      loadingPlugin.remove();
+    }, 2000);
   };
 }
 
@@ -88,15 +103,17 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
     const pluginUrl = `${baseUrl}/${path}?external_url=${
       window.location.href
     }&ott=${ottRes?.data || ''}&auto_off=${autoOff || ''}`;
+    if (!autoOffSetting) {
+      iframePlugin.style.display = 'block';
+      loadingPlugin.appendChild(loader);
+      document.body.appendChild(loadingPlugin);
+    }
     if (path === 'plugin') {
       iframePlugin.src = pluginUrl;
       document.body.appendChild(iframePlugin);
     } else {
       iframe.src = pluginUrl;
       document.body.appendChild(iframe);
-    }
-    if (!autoOffSetting) {
-      iframePlugin.style.display = 'block';
     }
     loading = false;
   }
