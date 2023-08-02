@@ -145,6 +145,7 @@ if (
   !window.location.origin.includes('localhost') &&
   !existed
 ) {
+  document.body.style.height = '100vh';
   chrome.runtime.sendMessage(
     {
       type: 'on-load',
