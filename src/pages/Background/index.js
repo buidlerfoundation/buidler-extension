@@ -45,6 +45,14 @@ try {
       chrome.storage.local.set({ [msg.key]: `${msg.value}` });
     }
     if (msg.type === 'buidler-plugin-clear-cookie') {
+      chrome.cookies.getAll({ domain: 'beta.buidler.app' }, function (cookies) {
+        for (var i = 0; i < cookies.length; i++) {
+          chrome.cookies.remove({
+            url: 'https://beta.buidler.app' + cookies[i].path,
+            name: cookies[i].name,
+          });
+        }
+      });
       chrome.storage.local.clear();
     }
   });
