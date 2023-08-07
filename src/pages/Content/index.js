@@ -145,7 +145,9 @@ if (
   !window.location.origin.includes('localhost') &&
   !existed
 ) {
-  document.body.style.height = '100vh';
+  if (window.location.href === 'https://www.tesla.com/') {
+    document.body.style.height = '100vh';
+  }
   chrome.runtime.sendMessage(
     {
       type: 'on-load',
