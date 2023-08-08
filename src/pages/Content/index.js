@@ -38,6 +38,7 @@ if (!existed) {
   iframePlugin.style.opacity = 0;
   iframePlugin.style.colorScheme = 'auto';
   iframePlugin.style.display = 'none';
+  iframePlugin.style.border = 'none';
   iframePlugin.onload = () => {
     iframePlugin.style.opacity = 1;
     setTimeout(() => {
