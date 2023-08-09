@@ -31,3 +31,12 @@
     transform: rotate(360deg);
   }
 }
+
+.move-container {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  width: 80px;
+  height: 80px;
+  cursor: move;
+}
