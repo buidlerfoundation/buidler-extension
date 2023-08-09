@@ -1,3 +1,4 @@
+document.documentElement.setAttribute('buidler-extension', true);
 let loading = true;
 let panelOpen = false;
 let autoOffSetting = false;

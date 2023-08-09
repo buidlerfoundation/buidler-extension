@@ -100,3 +100,15 @@ chrome.declarativeNetRequest.updateDynamicRules({
   removeRuleIds: rules.map((rule) => rule.id), // remove existing rules
   addRules: rules,
 });
+
+// let microsecondsPerWeek = 1000 * 60 * 60 * 24 * 7;
+// let oneWeekAgo = new Date().getTime() - microsecondsPerWeek;
+// chrome.history.search(
+//   {
+//     text: '', // Return every history item....
+//     startTime: oneWeekAgo, // that was accessed less than one week ago.
+//   },
+//   function (historyItems) {
+//     console.log(historyItems);
+//   }
+// );
