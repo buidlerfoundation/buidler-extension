@@ -118,8 +118,7 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
     const { ottRes, autoOff } = msg;
     autoOffSetting = autoOff === 'true';
     const path = 'plugin';
-    // const baseUrl = 'https://beta.buidler.app';
-    const baseUrl = 'https://9d32-42-116-189-245.ngrok-free.app';
+    const baseUrl = 'https://beta.buidler.app';
     const pluginUrl = `${baseUrl}/${path}?external_url=${
       window.location.href
     }&ott=${ottRes?.data || ''}&auto_off=${autoOff || ''}`;
