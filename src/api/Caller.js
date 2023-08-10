@@ -1,5 +1,5 @@
 const accessTokenKey = 'Buidler_access_token';
-const apiBaseUrl = 'https://staging.api.buidler.app/';
+const apiBaseUrl = 'https://prod.api.buidler.app/';
 
 const METHOD_GET = 'get';
 const METHOD_POST = 'post';
