@@ -1,15 +1,15 @@
 .loading-container {
-  position: fixed;
+  position: absolute;
   bottom: 20px;
   right: 20px;
   width: 390px;
-  z-index: 9000000000000000000;
   color-scheme: auto;
   background: #191919;
   display: flex;
   border-radius: 10px;
   align-items: center;
   justify-content: center;
+  z-index: -1;
 }
 
 .loader {

@@ -56,13 +56,13 @@ if (!existed) {
   iframePlugin.style.border = 'none';
   iframePlugin.onload = () => {
     pluginElement.style.opacity = 1;
-    dragElement(pluginElement);
-    setTimeout(() => {
-      loadingPlugin.remove();
-    }, 2000);
+    loader.remove();
+    // dragElement(pluginElement);
   };
-  pluginElement.appendChild(move);
+  // pluginElement.appendChild(move);
+  loadingPlugin.appendChild(loader);
   pluginElement.appendChild(iframePlugin);
+  pluginElement.appendChild(loadingPlugin);
 }
 
 // iframe panel
@@ -125,8 +125,6 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
     }&ott=${ottRes?.data || ''}&auto_off=${autoOff || ''}`;
     if (!autoOffSetting) {
       pluginElement.style.display = 'block';
-      loadingPlugin.appendChild(loader);
-      document.body.appendChild(loadingPlugin);
     }
     if (path === 'plugin') {
       iframePlugin.src = pluginUrl;
