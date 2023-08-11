@@ -161,6 +161,7 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
 if (
   !window.location.origin.includes('community.buidler.app') &&
   !window.location.origin.includes('beta.buidler.app') &&
+  !window.location.origin.includes('buidler.app') &&
   !window.location.origin.includes('localhost') &&
   !existed
 ) {
