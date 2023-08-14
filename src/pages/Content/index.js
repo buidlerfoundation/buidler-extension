@@ -1,3 +1,5 @@
+import { baseUrl, host } from '../../constant';
+
 document.documentElement.setAttribute('buidler-extension', true);
 let loading = true;
 let panelOpen = false;
@@ -54,6 +56,7 @@ if (!existed) {
   iframePlugin.style.width = '100%';
   iframePlugin.frameBorder = 'none';
   iframePlugin.style.border = 'none';
+  iframePlugin.style.setProperty('margin', '0', 'important');
   iframePlugin.onload = () => {
     pluginElement.style.opacity = 1;
     loader.remove();
@@ -119,7 +122,6 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
     const { ottRes, autoOff } = msg;
     autoOffSetting = autoOff === 'true';
     const path = 'plugin';
-    const baseUrl = 'https://beta.buidler.app';
     const pluginUrl = `${baseUrl}/${path}?external_url=${
       window.location.href
     }&ott=${ottRes?.data || ''}&auto_off=${autoOff || ''}`;
@@ -159,9 +161,9 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
 });
 
 if (
-  !window.location.origin.includes('community.buidler.app') &&
-  !window.location.origin.includes('beta.buidler.app') &&
-  !window.location.origin.includes('buidler.app') &&
+  !window.location.origin.includes(`community.${host}`) &&
+  !window.location.origin.includes(`beta.${host}`) &&
+  !window.location.origin.includes(host) &&
   !window.location.origin.includes('localhost') &&
   !existed
 ) {
@@ -280,15 +282,15 @@ window.addEventListener('message', (e) => {
       el.style.display = 'none';
     }
     if (e.data === 'open-plugin') {
-      el.style.inset = `0px 0px 0px ${el.offsetLeft}px`;
+      // el.style.inset = `0px 0px 0px ${el.offsetLeft}px`;
       el.style.height = '100vh';
     }
     if (e.data === 'close-plugin') {
-      const top =
-        lastVerticalPosition === 'top'
-          ? 0
-          : window.innerHeight - getBubbleHeightValue();
-      el.style.inset = `${top}px 0px 0px ${el.offsetLeft}px`;
+      // const top =
+      //   lastVerticalPosition === 'top'
+      //     ? 0
+      //     : window.innerHeight - getBubbleHeightValue();
+      // el.style.inset = `${top}px 0px 0px ${el.offsetLeft}px`;
       el.style.height = getBubbleHeight();
     }
     if (e.data === 'open-plugin-menu') {

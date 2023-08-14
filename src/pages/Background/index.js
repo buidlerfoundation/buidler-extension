@@ -1,4 +1,5 @@
 import Caller from '../../api/Caller';
+import { baseUrl, host } from '../../constant';
 import rules from './rules';
 
 const autoOffKey = 'Buidler_auto_off_plugin';
@@ -36,7 +37,7 @@ try {
     }
     if (msg.type === 'buidler-plugin-set-cookie') {
       chrome.cookies.set({
-        url: 'https://beta.buidler.app/',
+        url: `${baseUrl}/`,
         name: msg.key,
         value: `${msg.value}`,
         sameSite: 'no_restriction',
@@ -45,10 +46,10 @@ try {
       chrome.storage.local.set({ [msg.key]: `${msg.value}` });
     }
     if (msg.type === 'buidler-plugin-clear-cookie') {
-      chrome.cookies.getAll({ domain: 'beta.buidler.app' }, function (cookies) {
+      chrome.cookies.getAll({ domain: host }, function (cookies) {
         for (var i = 0; i < cookies.length; i++) {
           chrome.cookies.remove({
-            url: 'https://beta.buidler.app' + cookies[i].path,
+            url: baseUrl + cookies[i].path,
             name: cookies[i].name,
           });
         }
