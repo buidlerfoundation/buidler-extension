@@ -200,15 +200,6 @@ if (
     },
     (callback) => {}
   );
-  window.addEventListener('focus', () => {
-    chrome.runtime.sendMessage(
-      {
-        type: 'on-focus',
-        url: window.location.href,
-      },
-      (callback) => {}
-    );
-  });
 
   window.addEventListener('message', (e) => {
     const el = document.getElementById('buidler-plugin');
@@ -217,6 +208,15 @@ if (
       e.data.type === 'buidler-plugin-set-cookie' ||
       e.data.type === 'buidler-plugin-clear-cookie'
     ) {
+      if (e.data.type === 'buidler-plugin-clear-cookie') {
+        isAuthenticated = false;
+      }
+      if (
+        e.data.type === 'buidler-plugin-set-cookie' &&
+        e.data.key === 'Buidler_access_token'
+      ) {
+        isAuthenticated = true;
+      }
       chrome.runtime.sendMessage(e.data, (resCallback) => {
         // handle call back
       });
