@@ -1,4 +1,4 @@
-.loading-container {
+.buidler-loading-container {
   position: absolute;
   bottom: 20px;
   right: 20px;
@@ -12,7 +12,7 @@
   z-index: -1;
 }
 
-.loader {
+.buidler-loader {
   border: 2px solid #191919;
   border-top: 2px solid #727272;
   border-right: 2px solid #727272;
@@ -32,7 +32,7 @@
   }
 }
 
-.move-container {
+.buidler-move-container {
   position: absolute;
   left: 20px;
   top: 20px;

@@ -28,10 +28,10 @@ const getLoadingHeight = () => {
 
 // plugin loading
 var loadingPlugin = document.createElement('div');
-loadingPlugin.className = 'loading-container';
+loadingPlugin.className = 'buidler-loading-container';
 loadingPlugin.style.height = getLoadingHeight();
 var loader = document.createElement('div');
-loader.className = 'loader';
+loader.className = 'buidler-loader';
 
 // iframe plugin
 const existed = !!document.getElementById('buidler-plugin-frame');
@@ -51,7 +51,7 @@ if (!existed) {
   pluginElement.style.colorScheme = 'auto';
   pluginElement.style.display = 'none';
   move.id = 'buidler-plugin-move';
-  move.className = 'move-container';
+  move.className = 'buidler-move-container';
   iframePlugin.id = 'buidler-plugin-frame';
   iframePlugin.style.height = '100%';
   iframePlugin.style.width = '100%';
@@ -120,14 +120,14 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
     }
   }
   if (msg?.type === 'on-inject-iframe') {
-    const { ottRes, autoOff } = msg;
+    const { ottRes, autoOff, uniqId } = msg;
     autoOffSetting = autoOff === 'true';
     const path = 'plugin';
     const ott = ottRes?.data || '';
     isAuthenticated = !!ott;
     const pluginUrl = `${baseUrl}/${path}?external_url=${
       window.location.href
-    }&ott=${ott}&auto_off=${autoOff || ''}`;
+    }&ott=${ott}&auto_off=${autoOff || ''}&extension_id=${uniqId}`;
     if (!autoOffSetting) {
       pluginElement.style.display = 'block';
     }

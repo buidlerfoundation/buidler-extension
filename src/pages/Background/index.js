@@ -1,5 +1,5 @@
 import Caller from '../../api/Caller';
-import { baseUrl, host } from '../../constant';
+import { baseUrl, getUniqId, host } from '../../constant';
 import rules from './rules';
 
 const autoOffKey = 'Buidler_auto_off_plugin';
@@ -38,11 +38,12 @@ try {
     if (msg.type === 'on-load') {
       const ottRes = await Caller.get('authentication/ott');
       const storageAutoOff = await chrome.storage.local.get(autoOffKey);
+      const uniqId = await getUniqId();
       const autoOff = storageAutoOff[autoOffKey];
       if (sender?.tab?.id) {
         chrome.tabs.sendMessage(
           sender?.tab?.id,
-          { type: 'on-inject-iframe', ottRes, autoOff },
+          { type: 'on-inject-iframe', ottRes, autoOff, uniqId },
           (resCallback) => {
             // handle call back
           }
