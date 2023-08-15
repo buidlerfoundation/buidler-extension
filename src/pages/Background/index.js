@@ -21,6 +21,20 @@ chrome.action.onClicked.addListener(async (tab) => {
 try {
   chrome.runtime.onMessage.addListener(async (msg, sender, response) => {
     response();
+    if (msg.type === 'on-focus') {
+      const ottRes = await Caller.get('authentication/ott');
+      const storageAutoOff = await chrome.storage.local.get(autoOffKey);
+      const autoOff = storageAutoOff[autoOffKey];
+      if (sender?.tab?.id) {
+        chrome.tabs.sendMessage(
+          sender?.tab?.id,
+          { type: 'on-frame-focus', ottRes, autoOff },
+          (resCallback) => {
+            // handle call back
+          }
+        );
+      }
+    }
     if (msg.type === 'on-load') {
       const ottRes = await Caller.get('authentication/ott');
       const storageAutoOff = await chrome.storage.local.get(autoOffKey);

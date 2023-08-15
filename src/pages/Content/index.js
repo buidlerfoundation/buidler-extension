@@ -6,6 +6,7 @@ let panelOpen = false;
 let autoOffSetting = false;
 let lastVerticalPosition = 'bottom';
 let lastHorizontalPosition = 'right';
+let isAuthenticated = false;
 
 const getBubbleHeight = () => {
   const isMainUrl = window.location.pathname === '/';
@@ -122,9 +123,11 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
     const { ottRes, autoOff } = msg;
     autoOffSetting = autoOff === 'true';
     const path = 'plugin';
+    const ott = ottRes?.data || '';
+    isAuthenticated = !!ott;
     const pluginUrl = `${baseUrl}/${path}?external_url=${
       window.location.href
-    }&ott=${ottRes?.data || ''}&auto_off=${autoOff || ''}`;
+    }&ott=${ott}&auto_off=${autoOff || ''}`;
     if (!autoOffSetting) {
       pluginElement.style.display = 'block';
     }
@@ -137,12 +140,32 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
     }
     loading = false;
   }
+  if (msg?.type === 'on-frame-focus') {
+    const { ottRes, autoOff } = msg;
+    autoOffSetting = autoOff === 'true';
+    const ott = ottRes?.data || '';
+    if (!!ott !== isAuthenticated) {
+      const pluginFrame = document.getElementById('buidler-plugin-frame');
+      isAuthenticated = !!ott;
+      pluginFrame?.contentWindow?.postMessage?.(
+        { type: 'update-authenticate', payload: { ott } },
+        '*'
+      );
+    }
+    // iframePlugin.src = `${baseUrl}/plugin?external_url=${
+    //   window.location.href
+    // }&ott=${ottRes?.data || ''}&auto_off=${autoOff || ''}`;
+    if (!autoOffSetting) {
+      pluginElement.style.display = 'block';
+    }
+  }
   if (msg?.type === 'on-tab-update') {
     const { url } = msg;
     const el = document.getElementById('buidler-plugin');
     const pluginFrame = document.getElementById('buidler-plugin-frame');
     if (el && pluginFrame) {
       if (el.style.height !== '100vh') {
+        loadingPlugin.style.height = getLoadingHeight();
         el.style.height = getBubbleHeight();
       }
       pluginFrame?.contentWindow?.postMessage?.(
@@ -177,6 +200,60 @@ if (
     },
     (callback) => {}
   );
+  window.addEventListener('focus', () => {
+    chrome.runtime.sendMessage(
+      {
+        type: 'on-focus',
+        url: window.location.href,
+      },
+      (callback) => {}
+    );
+  });
+
+  window.addEventListener('message', (e) => {
+    const el = document.getElementById('buidler-plugin');
+    const pluginFrame = document.getElementById('buidler-plugin-frame');
+    if (
+      e.data.type === 'buidler-plugin-set-cookie' ||
+      e.data.type === 'buidler-plugin-clear-cookie'
+    ) {
+      chrome.runtime.sendMessage(e.data, (resCallback) => {
+        // handle call back
+      });
+    }
+    if (pluginFrame && el) {
+      if (e.data === 'show-plugin') {
+        if (!autoOffSetting) {
+          el.style.display = 'block';
+        }
+      }
+      if (e.data === 'hide-plugin') {
+        el.style.display = 'none';
+      }
+      if (e.data === 'open-plugin') {
+        // el.style.inset = `0px 0px 0px ${el.offsetLeft}px`;
+        el.style.height = '100vh';
+      }
+      if (e.data === 'close-plugin') {
+        // const top =
+        //   lastVerticalPosition === 'top'
+        //     ? 0
+        //     : window.innerHeight - getBubbleHeightValue();
+        // el.style.inset = `${top}px 0px 0px ${el.offsetLeft}px`;
+        el.style.height = getBubbleHeight();
+      }
+      if (e.data === 'open-plugin-menu') {
+        el.style.height = '650px';
+      }
+      if (e.data === 'close-plugin-menu') {
+        el.style.height = getBubbleHeight();
+      }
+    }
+    if (e.data === 'toggle-panel') {
+      toggle();
+      panelOpen = !panelOpen;
+    }
+  });
 }
 
 function dragElement(elmnt) {
@@ -260,51 +337,6 @@ function dragElement(elmnt) {
     return '0px';
   }
 }
-
-window.addEventListener('message', (e) => {
-  const el = document.getElementById('buidler-plugin');
-  const pluginFrame = document.getElementById('buidler-plugin-frame');
-  if (
-    e.data.type === 'buidler-plugin-set-cookie' ||
-    e.data.type === 'buidler-plugin-clear-cookie'
-  ) {
-    chrome.runtime.sendMessage(e.data, (resCallback) => {
-      // handle call back
-    });
-  }
-  if (pluginFrame && el) {
-    if (e.data === 'show-plugin') {
-      if (!autoOffSetting) {
-        el.style.display = 'block';
-      }
-    }
-    if (e.data === 'hide-plugin') {
-      el.style.display = 'none';
-    }
-    if (e.data === 'open-plugin') {
-      // el.style.inset = `0px 0px 0px ${el.offsetLeft}px`;
-      el.style.height = '100vh';
-    }
-    if (e.data === 'close-plugin') {
-      // const top =
-      //   lastVerticalPosition === 'top'
-      //     ? 0
-      //     : window.innerHeight - getBubbleHeightValue();
-      // el.style.inset = `${top}px 0px 0px ${el.offsetLeft}px`;
-      el.style.height = getBubbleHeight();
-    }
-    if (e.data === 'open-plugin-menu') {
-      el.style.height = '650px';
-    }
-    if (e.data === 'close-plugin-menu') {
-      el.style.height = getBubbleHeight();
-    }
-  }
-  if (e.data === 'toggle-panel') {
-    toggle();
-    panelOpen = !panelOpen;
-  }
-});
 
 // highlight
 
