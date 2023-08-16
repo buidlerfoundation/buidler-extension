@@ -200,61 +200,61 @@ if (
     },
     (callback) => {}
   );
-
-  window.addEventListener('message', (e) => {
-    const el = document.getElementById('buidler-plugin');
-    const pluginFrame = document.getElementById('buidler-plugin-frame');
-    if (
-      e.data.type === 'buidler-plugin-set-cookie' ||
-      e.data.type === 'buidler-plugin-clear-cookie'
-    ) {
-      if (e.data.type === 'buidler-plugin-clear-cookie') {
-        isAuthenticated = false;
-      }
-      if (
-        e.data.type === 'buidler-plugin-set-cookie' &&
-        e.data.key === 'Buidler_access_token'
-      ) {
-        isAuthenticated = true;
-      }
-      chrome.runtime.sendMessage(e.data, (resCallback) => {
-        // handle call back
-      });
-    }
-    if (pluginFrame && el) {
-      if (e.data === 'show-plugin') {
-        if (!autoOffSetting) {
-          el.style.display = 'block';
-        }
-      }
-      if (e.data === 'hide-plugin') {
-        el.style.display = 'none';
-      }
-      if (e.data === 'open-plugin') {
-        // el.style.inset = `0px 0px 0px ${el.offsetLeft}px`;
-        el.style.height = '100vh';
-      }
-      if (e.data === 'close-plugin') {
-        // const top =
-        //   lastVerticalPosition === 'top'
-        //     ? 0
-        //     : window.innerHeight - getBubbleHeightValue();
-        // el.style.inset = `${top}px 0px 0px ${el.offsetLeft}px`;
-        el.style.height = getBubbleHeight();
-      }
-      if (e.data === 'open-plugin-menu') {
-        el.style.height = '650px';
-      }
-      if (e.data === 'close-plugin-menu') {
-        el.style.height = getBubbleHeight();
-      }
-    }
-    if (e.data === 'toggle-panel') {
-      toggle();
-      panelOpen = !panelOpen;
-    }
-  });
 }
+
+window.addEventListener('message', (e) => {
+  const el = document.getElementById('buidler-plugin');
+  const pluginFrame = document.getElementById('buidler-plugin-frame');
+  if (
+    e.data.type === 'buidler-plugin-set-cookie' ||
+    e.data.type === 'buidler-plugin-clear-cookie'
+  ) {
+    if (e.data.type === 'buidler-plugin-clear-cookie') {
+      isAuthenticated = false;
+    }
+    if (
+      e.data.type === 'buidler-plugin-set-cookie' &&
+      e.data.key === 'Buidler_access_token'
+    ) {
+      isAuthenticated = true;
+    }
+    chrome.runtime.sendMessage(e.data, (resCallback) => {
+      // handle call back
+    });
+  }
+  if (pluginFrame && el) {
+    if (e.data === 'show-plugin') {
+      if (!autoOffSetting) {
+        el.style.display = 'block';
+      }
+    }
+    if (e.data === 'hide-plugin') {
+      el.style.display = 'none';
+    }
+    if (e.data === 'open-plugin') {
+      // el.style.inset = `0px 0px 0px ${el.offsetLeft}px`;
+      el.style.height = '100vh';
+    }
+    if (e.data === 'close-plugin') {
+      // const top =
+      //   lastVerticalPosition === 'top'
+      //     ? 0
+      //     : window.innerHeight - getBubbleHeightValue();
+      // el.style.inset = `${top}px 0px 0px ${el.offsetLeft}px`;
+      el.style.height = getBubbleHeight();
+    }
+    if (e.data === 'open-plugin-menu') {
+      el.style.height = '650px';
+    }
+    if (e.data === 'close-plugin-menu') {
+      el.style.height = getBubbleHeight();
+    }
+  }
+  if (e.data === 'toggle-panel') {
+    toggle();
+    panelOpen = !panelOpen;
+  }
+});
 
 function dragElement(elmnt) {
   var pos1 = 0,
