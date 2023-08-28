@@ -8,18 +8,20 @@ let lastVerticalPosition = 'bottom';
 let lastHorizontalPosition = 'right';
 let isAuthenticated = false;
 
+const isMainUrl =
+  window.location.pathname === '/' &&
+  !window.location.search &&
+  !window.location.hash;
+
 const getBubbleHeight = () => {
-  const isMainUrl = window.location.pathname === '/';
   return isMainUrl ? '130px' : '165px';
 };
 
 const getBubbleHeightValue = () => {
-  const isMainUrl = window.location.pathname === '/';
   return isMainUrl ? 130 : 165;
 };
 
 const getLoadingHeight = () => {
-  const isMainUrl = window.location.pathname === '/';
   return isMainUrl ? '90px' : '137px';
 };
 
