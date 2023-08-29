@@ -1,35 +1,35 @@
-const allResourceTypes = Object.values(
-  chrome.declarativeNetRequest.ResourceType
-);
+// const allResourceTypes = Object.values(
+//   chrome.declarativeNetRequest.ResourceType
+// );
 
-const rules: chrome.declarativeNetRequest.Rule[] = [
+const rules: any = [
   {
     id: 1,
     priority: 1,
     action: {
-      type: chrome.declarativeNetRequest.RuleActionType.MODIFY_HEADERS,
+      type: 'modifyHeaders',
       responseHeaders: [
         {
-          operation: chrome.declarativeNetRequest.HeaderOperation.REMOVE,
+          operation: 'remove',
           header: 'x-frame-options',
         },
         {
-          operation: chrome.declarativeNetRequest.HeaderOperation.REMOVE,
+          operation: 'remove',
           header: 'X-Frame-Options',
         },
         {
-          operation: chrome.declarativeNetRequest.HeaderOperation.REMOVE,
+          operation: 'remove',
           header: 'content-security-policy',
         },
         {
-          operation: chrome.declarativeNetRequest.HeaderOperation.REMOVE,
+          operation: 'remove',
           header: 'frame-ancestors',
         },
       ],
     },
     condition: {
       urlFilter: '*',
-      resourceTypes: allResourceTypes,
+      resourceTypes: ['main_frame', 'sub_frame'],
     },
   },
 ];
