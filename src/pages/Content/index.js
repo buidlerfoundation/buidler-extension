@@ -1,4 +1,5 @@
 import { baseUrl, host } from '../../constant';
+import { getMetadata } from './htmlParser';
 
 document.documentElement.setAttribute('buidler-extension', true);
 let loading = true;
@@ -8,21 +9,21 @@ let lastVerticalPosition = 'bottom';
 let lastHorizontalPosition = 'right';
 let isAuthenticated = false;
 
-const isMainUrl =
+const isMainUrl = () =>
   window.location.pathname === '/' &&
   !window.location.search &&
   !window.location.hash;
 
 const getBubbleHeight = () => {
-  return isMainUrl ? '130px' : '165px';
+  return isMainUrl() ? '130px' : '165px';
 };
 
 const getBubbleHeightValue = () => {
-  return isMainUrl ? 130 : 165;
+  return isMainUrl() ? 130 : 165;
 };
 
 const getLoadingHeight = () => {
-  return isMainUrl ? '90px' : '137px';
+  return isMainUrl() ? '90px' : '137px';
 };
 
 // main -> 90px
@@ -127,9 +128,12 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
     const path = 'plugin';
     const ott = ottRes?.data || '';
     isAuthenticated = !!ott;
+    const metadata = getMetadata();
     const pluginUrl = `${baseUrl}/${path}?external_url=${
       window.location.href
-    }&ott=${ott}&auto_off=${autoOff || ''}&extension_id=${uniqId}`;
+    }&ott=${ott}&auto_off=${
+      autoOff || ''
+    }&extension_id=${uniqId}&metadata=${JSON.stringify(metadata)}`;
     if (!autoOffSetting) {
       pluginElement.style.display = 'block';
     }
@@ -165,13 +169,14 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
     const { url } = msg;
     const el = document.getElementById('buidler-plugin');
     const pluginFrame = document.getElementById('buidler-plugin-frame');
+    const metadata = getMetadata();
     if (el && pluginFrame) {
       if (el.style.height !== '100vh') {
         loadingPlugin.style.height = getLoadingHeight();
         el.style.height = getBubbleHeight();
       }
       pluginFrame?.contentWindow?.postMessage?.(
-        { type: 'update-external', payload: url },
+        { type: 'update-external', payload: url, metadata },
         '*'
       );
     }
