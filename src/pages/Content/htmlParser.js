@@ -12,9 +12,12 @@ export const getMetadata = () => {
   const icon = [...document.querySelectorAll('link[rel*="icon"]')].sort(
     (a, b) => getSize(b) - getSize(a)
   )?.[0]?.href;
-  const cover =
+  let cover =
     document.querySelector('meta[property="og:image"]')?.content ||
     document.querySelector('meta[property="twitter:image"]')?.content;
+  if (cover && !cover.includes(window.location.origin)) {
+    cover = `${window.location.origin}${cover}`;
+  }
   return {
     title,
     description,

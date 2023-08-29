@@ -129,11 +129,13 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
     const ott = ottRes?.data || '';
     isAuthenticated = !!ott;
     const metadata = getMetadata();
-    const pluginUrl = `${baseUrl}/${path}?external_url=${
-      window.location.href
-    }&ott=${ott}&auto_off=${
-      autoOff || ''
-    }&extension_id=${uniqId}&metadata=${JSON.stringify(metadata)}`;
+    const pluginUrl = `${baseUrl}/${path}?${new URLSearchParams({
+      external_url: `${window.location.href}`,
+      ott: `${ott}`,
+      auto_off: `${autoOff || ''}`,
+      extension_id: `${uniqId}`,
+      metadata: `${JSON.stringify(metadata)}`,
+    })}`;
     if (!autoOffSetting) {
       pluginElement.style.display = 'block';
     }
@@ -370,10 +372,63 @@ function dragElement(elmnt) {
 //   }
 // });
 
+// function highlightElement(params) {
+//   const { text, startOffset, endOffset } = params;
+//   const parentElement = [...document.querySelectorAll('p')].find(
+//     (el) => el.innerText === text
+//   );
+//   const newParent = parentElement.cloneNode();
+//   let start = 0;
+//   parentElement?.childNodes?.forEach((node, index) => {
+//     const content = node.textContent || node.innerText;
+//     const length = content.length;
+//     const end = start + length;
+//     const t1 = content?.substring(
+//       0,
+//       startOffset < start ? 0 : startOffset - start
+//     );
+//     const t2 = content?.substring(
+//       startOffset < start ? 0 : startOffset - start,
+//       endOffset - start
+//     );
+//     const t3 = content?.substring(endOffset - start);
+//     if (node.childNodes?.length > 0) {
+//       const newNode = node.cloneNode();
+//       if (t1) {
+//         newNode.appendChild(document.createTextNode(t1));
+//       }
+//       if (t2) {
+//         const markNode = document.createElement('mark');
+//         markNode.setAttribute('data-highlight', true);
+//         markNode.innerText = t2;
+//         newNode.appendChild(markNode);
+//       }
+//       if (t3) {
+//         newNode.appendChild(document.createTextNode(t3));
+//       }
+//       newParent.appendChild(newNode);
+//     } else {
+//       if (t1) {
+//         newParent.appendChild(document.createTextNode(t1));
+//       }
+//       if (t2) {
+//         const markNode = document.createElement('mark');
+//         markNode.setAttribute('data-highlight', true);
+//         markNode.innerText = t2;
+//         newParent.appendChild(markNode);
+//       }
+//       if (t3) {
+//         newParent.appendChild(document.createTextNode(t3));
+//       }
+//     }
+//     start = end;
+//   });
+//   parentElement.replaceWith(newParent);
+// }
+
 // document.onmouseup = (e) => {
 //   const selection = window.getSelection();
 //   if (selection.toString()) {
-//     console.log('XXX: ', e);
 //     const p1 = getParentParagraph(selection.anchorNode);
 //     const p2 = getParentParagraph(selection.focusNode);
 //     if (p1 && p2 && p1.innerText === p2.innerText) {
@@ -391,56 +446,11 @@ function dragElement(elmnt) {
 //       const startOffset = Math.min(offset1, offset2);
 //       const endOffset = Math.max(offset1, offset2);
 //       const str = p1.innerText.substring(startOffset, endOffset);
-//       const parentElement = [...document.querySelectorAll('p')].find(
-//         (el) => el.innerText === p1.innerText
-//       );
-//       const newParent = parentElement.cloneNode();
-//       let start = 0;
-//       parentElement?.childNodes?.forEach((node, index) => {
-//         const content = node.textContent || node.innerText;
-//         const length = content.length;
-//         const end = start + length;
-//         const t1 = content?.substring(
-//           0,
-//           startOffset < start ? 0 : startOffset - start
-//         );
-//         const t2 = content?.substring(
-//           startOffset < start ? 0 : startOffset - start,
-//           endOffset - start
-//         );
-//         const t3 = content?.substring(endOffset - start);
-//         if (node.childNodes?.length > 0) {
-//           const newNode = node.cloneNode();
-//           if (t1) {
-//             newNode.appendChild(document.createTextNode(t1));
-//           }
-//           if (t2) {
-//             const markNode = document.createElement('mark');
-//             markNode.setAttribute('data-highlight', true);
-//             markNode.innerText = t2;
-//             newNode.appendChild(markNode);
-//           }
-//           if (t3) {
-//             newNode.appendChild(document.createTextNode(t3));
-//           }
-//           newParent.appendChild(newNode);
-//         } else {
-//           if (t1) {
-//             newParent.appendChild(document.createTextNode(t1));
-//           }
-//           if (t2) {
-//             const markNode = document.createElement('mark');
-//             markNode.setAttribute('data-highlight', true);
-//             markNode.innerText = t2;
-//             newParent.appendChild(markNode);
-//           }
-//           if (t3) {
-//             newParent.appendChild(document.createTextNode(t3));
-//           }
-//         }
-//         start = end;
+//       highlightElement({
+//         text: p1.innerText,
+//         startOffset,
+//         endOffset,
 //       });
-//       parentElement.replaceWith(newParent);
 //     }
 //   }
 // };
