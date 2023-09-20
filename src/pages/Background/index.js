@@ -3,6 +3,7 @@ import { baseUrl, getUniqId, host } from '../../constant';
 import rules from './rules';
 
 const autoOffKey = 'Buidler_auto_off_plugin';
+const signerIdKey = 'Buidler_signer_id';
 
 chrome.action.onClicked.addListener(async (tab) => {
   if (tab.url?.includes('http')) {
@@ -22,14 +23,13 @@ try {
   chrome.runtime.onMessage.addListener(async (msg, sender, response) => {
     response();
     if (msg.type === 'on-load') {
-      const ottRes = await Caller.get('authentication/ott');
-      const storageAutoOff = await chrome.storage.local.get(autoOffKey);
+      const storageSignerId = await chrome.storage.local.get(signerIdKey);
       const uniqId = await getUniqId();
-      const autoOff = storageAutoOff[autoOffKey];
+      const signerId = storageSignerId[signerIdKey];
       if (sender?.tab?.id) {
         chrome.tabs.sendMessage(
           sender?.tab?.id,
-          { type: 'on-inject-iframe', ottRes, autoOff, uniqId },
+          { type: 'on-inject-iframe', signerId, uniqId },
           (resCallback) => {
             // handle call back
           }
