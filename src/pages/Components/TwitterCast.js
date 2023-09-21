@@ -27,7 +27,6 @@ const TwitterCast = ({ article, index, isDark }) => {
   );
   const onCastClick = useCallback(
     (e) => {
-      if (!value.trim()) return;
       let url = tweetUrl;
       if (isConversation) {
         url = window.location.pathname;
@@ -42,10 +41,18 @@ const TwitterCast = ({ article, index, isDark }) => {
       if (signerId) {
         type = 'tw-cast';
       }
+      const twUrl = `${window.location.origin}${url}`;
+      const text = value.trim()
+        ? value.trim() + `\n${twUrl}`
+        : twUrl + '\n\ncast via ';
       const payload = {
-        text: value,
+        text,
         embeds: [{ url: `${window.location.origin}${url}` }],
       };
+      if (!value.trim()) {
+        payload.mentions = [20108];
+        payload.mentions_positions = [twUrl.length + 11];
+      }
       fcPluginFrame?.contentWindow?.postMessage?.({ type, payload }, '*');
       setValue('');
     },

@@ -1,10 +1,13 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { getFCPluginFrame } from '../../utils';
+import IconFCCheck from './SVG/IconFCCheck';
+import IconFCUncheck from './SVG/IconFCUncheck';
 
 const TwitterQuickCast = ({ isDark }) => {
-  const [checked, setChecked] = useState(false);
-  const onChange = useCallback((e) => {
-    setChecked(e.target.checked);
+  const [checked, setChecked] = useState(true);
+  const toggle = useCallback((e) => {
+    e.stopPropagation();
+    setChecked((current) => !current);
   }, []);
   useEffect(() => {
     const element = document.querySelector(
@@ -34,14 +37,10 @@ const TwitterQuickCast = ({ isDark }) => {
     <div
       className={`buidler-theme-light ${
         isDark ? 'buidler-theme-dark' : ''
-      } buidler-tw-quick-cast-container`}
+      } buidler-tw-quick-cast-container normal-button`}
+      onClick={toggle}
     >
-      <input
-        type="checkbox"
-        className="checkbox"
-        onChange={onChange}
-        checked={checked}
-      />
+      {checked ? <IconFCCheck /> : <IconFCUncheck />}
       <span className="quick-cast-label">Cast on Farcaster</span>
     </div>
   );

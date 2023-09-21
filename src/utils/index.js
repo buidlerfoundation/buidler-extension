@@ -111,8 +111,6 @@ function dragElement(elmnt) {
 
 export const handleMessage = () => {
   window.addEventListener('message', (e) => {
-    const el = document.getElementById('buidler-plugin');
-    const pluginFrame = document.getElementById('buidler-plugin-frame');
     if (
       e.data.type === 'buidler-plugin-set-cookie' ||
       e.data.type === 'buidler-plugin-clear-cookie'
@@ -130,33 +128,8 @@ export const handleMessage = () => {
         // handle call back
       });
     }
-    if (pluginFrame && el) {
-      if (e.data === 'show-plugin') {
-        if (!autoOffSetting) {
-          el.style.display = 'block';
-        }
-      }
-      if (e.data === 'hide-plugin') {
-        el.style.display = 'none';
-      }
-      if (e.data === 'open-plugin') {
-        // el.style.inset = `0px 0px 0px ${el.offsetLeft}px`;
-        el.style.height = '100vh';
-      }
-      if (e.data === 'close-plugin') {
-        // const top =
-        //   lastVerticalPosition === 'top'
-        //     ? 0
-        //     : window.innerHeight - getBubbleHeightValue();
-        // el.style.inset = `${top}px 0px 0px ${el.offsetLeft}px`;
-        el.style.height = getBubbleHeight();
-      }
-      if (e.data === 'open-plugin-menu') {
-        el.style.height = '650px';
-      }
-      if (e.data === 'close-plugin-menu') {
-        el.style.height = getBubbleHeight();
-      }
+    if (e.data.type === 'b-fc-plugin-open-tab') {
+      window.open(e.data.url, '_blank');
     }
   });
 };

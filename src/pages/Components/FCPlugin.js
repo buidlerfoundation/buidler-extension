@@ -4,8 +4,6 @@ import LogoFC from './SVG/LogoFC';
 
 const FCPlugin = ({ signerId }) => {
   const [openPlugin, setOpenPlugin] = useState(false);
-  const [loaded, setLoaded] = useState(false);
-  const [logged, setLogged] = useState(false);
   const [dataSignerId, setDataSignerId] = useState('');
   const togglePlugin = useCallback(
     () => setOpenPlugin((current) => !current),
@@ -17,7 +15,6 @@ const FCPlugin = ({ signerId }) => {
         togglePlugin();
       }
       if (e?.data?.type === 'b-fc-plugin-logged') {
-        setLogged(true);
         setDataSignerId(e.data.signerId);
         const quickCast = document.getElementById('buidler-tweet-quick-cast');
         if (quickCast) {
@@ -30,16 +27,6 @@ const FCPlugin = ({ signerId }) => {
       window.removeEventListener('message', messageListener);
     };
   }, [togglePlugin]);
-  useEffect(() => {
-    if (openPlugin && !logged) {
-      setLoaded(false);
-    }
-  }, [logged, openPlugin]);
-  const onIframeLoad = useCallback(() => {
-    setTimeout(() => {
-      setLoaded(true);
-    }, 100);
-  }, []);
   return (
     <>
       <div
@@ -63,11 +50,9 @@ const FCPlugin = ({ signerId }) => {
             border: 'none',
             backgroundColor: '#191919',
             colorScheme: 'auto',
-            opacity: loaded ? 1 : 0,
           }}
           title="b-fc-plugin"
-          src={`https://https://beta.buidler.app/plugin-fc/${signerId || ''}`}
-          onLoad={onIframeLoad}
+          src={`https://beta.buidler.app/plugin-fc/${signerId || ''}`}
           id="fc-plugin-frame"
           data-signer-id={signerId || dataSignerId}
           data-open={openPlugin}

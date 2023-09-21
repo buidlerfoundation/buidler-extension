@@ -151,7 +151,7 @@ html {
 .buidler-tw-quick-cast-container .quick-cast-label {
   color: var(--color-placeholder);
   margin-left: 9px;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 15px;
   line-height: 20px;
 }
@@ -186,12 +186,17 @@ html {
   bottom: 0;
   right: -500px;
   width: 500px;
-  transition: transform 0.5s ease-out 0s;
-  transform: translateX(0px);
+  transition: right 0.5s ease-out 0s;
   border-left: 1px solid #242424;
   background-color: #191919;
 }
 
 .b-fc-plugin-open {
-  transform: translateX(-500px);
+  right: 0;
+}
+
+@media (max-width: 575px) {
+  .buidler-tweet-cast-container {
+    display: none;
+  }
 }

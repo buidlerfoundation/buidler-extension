@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "Buidler - One extension. Any communities.",
-  "description": "Dive into communities right on the sites you're browsing, instantly. Enjoy the freedom of communication now!",
+  "name": "XCaster - Turn your X into Farcaster",
+  "description": "A Chrome extension that enables you to share tweets with Farcaster friends, reshaping your centralized social profile into a decentralized network.",
   "options_page": "options.html",
   "background": { "service_worker": "background.bundle.js" },
   "action": {

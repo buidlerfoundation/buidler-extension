@@ -1,7 +1,7 @@
 {
-  "name": "buidler-extension",
+  "name": "x-caster",
   "version": "1.0.21",
-  "description": "Buidler extension",
+  "description": "A Chrome extension that enables you to share tweets with Farcaster friends, reshaping your centralized social profile into a decentralized network.",
   "license": "MIT",
   "repository": {
     "type": "git",
