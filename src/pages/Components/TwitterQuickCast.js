@@ -22,6 +22,10 @@ const TwitterQuickCast = ({ isDark }) => {
         const payload = {
           text: twitterTextInput?.innerText,
         };
+        const dataOpen = fcPluginFrame?.getAttribute('data-open');
+        if (dataOpen === 'false') {
+          document.querySelector('#btn-fc-plugin')?.click?.();
+        }
         fcPluginFrame?.contentWindow?.postMessage?.(
           { type: 'tw-cast', payload },
           '*'

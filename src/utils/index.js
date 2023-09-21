@@ -128,9 +128,9 @@ export const handleMessage = () => {
         // handle call back
       });
     }
-    if (e.data.type === 'b-fc-plugin-open-tab') {
-      window.open(e.data.url, '_blank');
-    }
+    // if (e.data.type === 'b-fc-plugin-open-tab') {
+    //   window.open(e.data.url, '_blank');
+    // }
   });
 };
 
