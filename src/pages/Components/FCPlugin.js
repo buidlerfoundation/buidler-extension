@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import IconJumpIn from './SVG/IconJumpIn';
 import LogoFC from './SVG/LogoFC';
+import { twTheme } from '../../utils';
 
 const FCPlugin = ({ signerId, open }) => {
   const [openPlugin, setOpenPlugin] = useState(open === 'true');
@@ -74,7 +75,9 @@ const FCPlugin = ({ signerId, open }) => {
             opacity: loaded ? 1 : 0,
           }}
           title="b-fc-plugin"
-          src={`https://beta.buidler.app/plugin-fc/${signerId || ''}`}
+          src={`https://beta.buidler.app/plugin-fc/${
+            signerId || ''
+          }?${new URLSearchParams({ theme: twTheme() })}`}
           id="fc-plugin-frame"
           onLoad={onLoadIframe}
           data-signer-id={signerId || dataSignerId}

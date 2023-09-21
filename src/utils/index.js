@@ -140,7 +140,11 @@ export const getFCPluginFrame = () => {
 
 export const twTheme = () => {
   const bg = document.body.style.backgroundColor;
-  return bg === 'rgb(0, 0, 0)' ? 'dark' : bg === 'rgb(21, 32, 43)' ? 'dim' : '';
+  return bg === 'rgb(0, 0, 0)'
+    ? 'dark'
+    : bg === 'rgb(21, 32, 43)'
+    ? 'dim'
+    : 'light';
 };
 
 export const appendTwitterQuickCastExpand = () => {
@@ -214,18 +218,33 @@ export const injectTwitterCast = () => {
         !document.body.className.includes('light')
       ) {
         document.body.className = 'light';
+        const fcPluginFrame = getFCPluginFrame();
+        fcPluginFrame?.contentWindow?.postMessage?.(
+          { type: 'b-fc-update-tw-theme', payload: 'light' },
+          '*'
+        );
       }
       if (
         document.body.style.backgroundColor === 'rgb(21, 32, 43)' &&
         !document.body.className.includes('dim')
       ) {
         document.body.className = 'dim';
+        const fcPluginFrame = getFCPluginFrame();
+        fcPluginFrame?.contentWindow?.postMessage?.(
+          { type: 'b-fc-update-tw-theme', payload: 'dim' },
+          '*'
+        );
       }
       if (
         document.body.style.backgroundColor === 'rgb(0, 0, 0)' &&
         !document.body.className.includes('dark')
       ) {
         document.body.className = 'dark';
+        const fcPluginFrame = getFCPluginFrame();
+        fcPluginFrame?.contentWindow?.postMessage?.(
+          { type: 'b-fc-update-tw-theme', payload: 'dark' },
+          '*'
+        );
       }
     }
     document.documentElement.addEventListener(
