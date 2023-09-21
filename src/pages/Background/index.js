@@ -1,9 +1,9 @@
-import Caller from '../../api/Caller';
 import { baseUrl, getUniqId, host } from '../../constant';
 import rules from './rules';
 
 const autoOffKey = 'Buidler_auto_off_plugin';
 const signerIdKey = 'Buidler_signer_id';
+const openPluginKey = 'Buidler_open_plugin';
 
 chrome.action.onClicked.addListener(async (tab) => {
   if (tab.url?.includes('http')) {
@@ -24,12 +24,14 @@ try {
     response();
     if (msg.type === 'on-load') {
       const storageSignerId = await chrome.storage.local.get(signerIdKey);
+      const storageOpenPlugin = await chrome.storage.local.get(openPluginKey);
       const uniqId = await getUniqId();
       const signerId = storageSignerId[signerIdKey];
+      const openPlugin = storageOpenPlugin[openPluginKey];
       if (sender?.tab?.id) {
         chrome.tabs.sendMessage(
           sender?.tab?.id,
-          { type: 'on-inject-iframe', signerId, uniqId },
+          { type: 'on-inject-iframe', signerId, openPlugin, uniqId },
           (resCallback) => {
             // handle call back
           }
@@ -61,12 +63,11 @@ try {
 
   chrome.tabs.onActivated.addListener(async (info) => {
     if (info.tabId) {
-      const ottRes = await Caller.get('authentication/ott');
       const storageAutoOff = await chrome.storage.local.get(autoOffKey);
       const autoOff = storageAutoOff[autoOffKey];
       chrome.tabs.sendMessage(
         info.tabId,
-        { type: 'on-frame-focus', ottRes, autoOff },
+        { type: 'on-frame-focus', autoOff },
         (resCallback) => {
           // handle call back
         }

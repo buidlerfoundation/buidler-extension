@@ -202,12 +202,14 @@ export const injectTwitterCast = () => {
   }
 };
 
-export const injectFCPlugin = (signerId) => {
+export const injectFCPlugin = (params) => {
   if (window.location.origin === 'https://twitter.com') {
     const div = document.createElement('div');
     div.id = 'buidler-fc-plugin';
     document.body.appendChild(div);
     const element = ReactDOM.createRoot(div);
-    element.render(<FCPlugin signerId={signerId} />);
+    element.render(
+      <FCPlugin signerId={params?.signerId} open={params?.open} />
+    );
   }
 };

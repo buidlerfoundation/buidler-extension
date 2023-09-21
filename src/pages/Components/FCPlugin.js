@@ -2,13 +2,17 @@ import React, { useState, useCallback, useEffect } from 'react';
 import IconJumpIn from './SVG/IconJumpIn';
 import LogoFC from './SVG/LogoFC';
 
-const FCPlugin = ({ signerId }) => {
-  const [openPlugin, setOpenPlugin] = useState(false);
+const FCPlugin = ({ signerId, open }) => {
+  const [openPlugin, setOpenPlugin] = useState(open === 'true');
+  const [loaded, setLoaded] = useState(false);
   const [dataSignerId, setDataSignerId] = useState('');
   const togglePlugin = useCallback(
     () => setOpenPlugin((current) => !current),
     []
   );
+  useEffect(() => {
+    chrome.storage.local.set({ Buidler_open_plugin: `${openPlugin}` });
+  }, [openPlugin]);
   useEffect(() => {
     const twSidebar = document.querySelector(
       'div[data-testid="sidebarColumn"]'
@@ -39,6 +43,11 @@ const FCPlugin = ({ signerId }) => {
       window.removeEventListener('message', messageListener);
     };
   }, [togglePlugin]);
+  const onLoadIframe = useCallback(() => {
+    setTimeout(() => {
+      setLoaded(true);
+    }, 500);
+  }, []);
   return (
     <>
       <div
@@ -62,10 +71,12 @@ const FCPlugin = ({ signerId }) => {
             border: 'none',
             backgroundColor: '#191919',
             colorScheme: 'auto',
+            opacity: loaded ? 1 : 0,
           }}
           title="b-fc-plugin"
           src={`https://beta.buidler.app/plugin-fc/${signerId || ''}`}
           id="fc-plugin-frame"
+          onLoad={onLoadIframe}
           data-signer-id={signerId || dataSignerId}
           data-open={openPlugin}
         />

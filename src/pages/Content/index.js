@@ -10,8 +10,10 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
     toggle();
   }
   if (msg?.type === 'on-inject-iframe') {
-    // on-inject-iframe
-    injectFCPlugin(msg?.signerId);
+    injectFCPlugin({
+      signerId: msg?.signerId,
+      open: msg?.openPlugin,
+    });
   }
   if (msg?.type === 'on-frame-focus') {
     // on-frame-focus
