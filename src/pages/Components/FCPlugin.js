@@ -10,6 +10,18 @@ const FCPlugin = ({ signerId }) => {
     []
   );
   useEffect(() => {
+    const twSidebar = document.querySelector(
+      'div[data-testid="sidebarColumn"]'
+    );
+    if (twSidebar) {
+      if (openPlugin) {
+        twSidebar.style.display = 'none';
+      } else {
+        twSidebar.style.display = 'flex';
+      }
+    }
+  }, [openPlugin]);
+  useEffect(() => {
     const messageListener = (e) => {
       if (e?.data?.type === 'b-fc-plugin-close') {
         togglePlugin();
