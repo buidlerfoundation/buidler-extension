@@ -138,6 +138,30 @@ export const getFCPluginFrame = () => {
   return document.querySelector('#fc-plugin-frame');
 };
 
+export const twTheme = () => {
+  const bg = document.body.style.backgroundColor;
+  return bg === 'rgb(0, 0, 0)' ? 'dark' : bg === 'rgb(21, 32, 43)' ? 'dim' : '';
+};
+
+export const appendTwitterQuickCastExpand = () => {
+  const quickCast = document.getElementById('buidler-tweet-quick-cast-expand');
+  if (quickCast) return;
+  const dialog = document.querySelector('div[role="dialog"]');
+  if (!dialog) return;
+  const toolBar = dialog.querySelector('div[data-testid="toolBar"]');
+  if (!toolBar) return;
+  const div = document.createElement('div');
+  div.id = 'buidler-tweet-quick-cast-expand';
+  const fcPluginFrame = getFCPluginFrame();
+  if (!fcPluginFrame?.getAttribute('data-signer-id')) {
+    div.style.display = 'none';
+  }
+  const postButtonEl = toolBar?.childNodes?.[1];
+  postButtonEl?.insertBefore(div, postButtonEl.firstChild);
+  const element = ReactDOM.createRoot(div);
+  element.render(<TwitterQuickCast parentElement={dialog} />);
+};
+
 export const appendTwitterQuickCast = () => {
   const quickCast = document.getElementById('buidler-tweet-quick-cast');
   if (quickCast) return;
@@ -152,11 +176,7 @@ export const appendTwitterQuickCast = () => {
   const postButtonEl = toolBar?.childNodes?.[1];
   postButtonEl?.insertBefore(div, postButtonEl.firstChild);
   const element = ReactDOM.createRoot(div);
-  element.render(
-    <TwitterQuickCast
-      isDark={document.body.style.backgroundColor === 'rgb(0, 0, 0)'}
-    />
-  );
+  element.render(<TwitterQuickCast />);
 };
 
 export const appendTwitterCastElement = () => {
@@ -177,13 +197,7 @@ export const appendTwitterCastElement = () => {
           node?.appendChild(div);
         }
         const element = ReactDOM.createRoot(div);
-        element.render(
-          <TwitterCast
-            article={article}
-            index={idx}
-            isDark={document.body.style.backgroundColor === 'rgb(0, 0, 0)'}
-          />
-        );
+        element.render(<TwitterCast article={article} index={idx} />);
       }
     }
   });
@@ -193,7 +207,26 @@ export const injectTwitterCast = () => {
   if (window.location.origin === 'https://twitter.com') {
     function onHTMLChange() {
       appendTwitterQuickCast();
+      appendTwitterQuickCastExpand();
       appendTwitterCastElement();
+      if (
+        document.body.style.backgroundColor === 'rgb(255, 255, 255)' &&
+        !document.body.className.includes('light')
+      ) {
+        document.body.className = 'light';
+      }
+      if (
+        document.body.style.backgroundColor === 'rgb(21, 32, 43)' &&
+        !document.body.className.includes('dim')
+      ) {
+        document.body.className = 'dim';
+      }
+      if (
+        document.body.style.backgroundColor === 'rgb(0, 0, 0)' &&
+        !document.body.className.includes('dark')
+      ) {
+        document.body.className = 'dark';
+      }
     }
     document.documentElement.addEventListener(
       'DOMSubtreeModified',

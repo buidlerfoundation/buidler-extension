@@ -51,7 +51,7 @@ const FCPlugin = ({ signerId, open }) => {
   return (
     <>
       <div
-        className="buidler-theme-light b-fc-open-plugin-container normal-button"
+        className="buidler-theme b-fc-open-plugin-container normal-button"
         id="btn-fc-plugin"
         onClick={togglePlugin}
       >
@@ -69,7 +69,7 @@ const FCPlugin = ({ signerId, open }) => {
             width: '100%',
             height: '100%',
             border: 'none',
-            backgroundColor: '#191919',
+            backgroundColor: 'var(--color-background-1)',
             colorScheme: 'auto',
             opacity: loaded ? 1 : 0,
           }}

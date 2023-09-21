@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import ContentEditable from 'react-contenteditable';
 import { getFCPluginFrame } from '../../utils';
 
-const TwitterCast = ({ article, index, isDark }) => {
+const TwitterCast = ({ article, index }) => {
   const [value, setValue] = useState('');
   const preventParentClick = useCallback((e) => {
     e.stopPropagation();
@@ -63,9 +63,7 @@ const TwitterCast = ({ article, index, isDark }) => {
   }, []);
   return (
     <div
-      className={`buidler-theme-light ${
-        isDark ? 'buidler-theme-dark' : ''
-      } buidler-tweet-cast-container`}
+      className="buidler-theme buidler-tweet-cast-container"
       onClick={preventParentClick}
     >
       {!value && (

@@ -3,18 +3,19 @@ import { getFCPluginFrame } from '../../utils';
 import IconFCCheck from './SVG/IconFCCheck';
 import IconFCUncheck from './SVG/IconFCUncheck';
 
-const TwitterQuickCast = ({ isDark }) => {
+const TwitterQuickCast = ({parentElement}) => {
   const [checked, setChecked] = useState(true);
   const toggle = useCallback((e) => {
     e.stopPropagation();
     setChecked((current) => !current);
   }, []);
   useEffect(() => {
-    const element = document.querySelector(
-      'div[data-testid="tweetButtonInline"]'
+    const root = parentElement || document
+    const element = root.querySelector(
+      'div[data-testid*="tweetButton"]'
     );
     const clickListener = (e) => {
-      const twitterTextInput = document.querySelector(
+      const twitterTextInput = root.querySelector(
         'div[data-testid="tweetTextarea_0"]'
       );
       if (twitterTextInput?.innerText && checked) {
@@ -36,12 +37,10 @@ const TwitterQuickCast = ({ isDark }) => {
     return () => {
       element?.removeEventListener('click', clickListener);
     };
-  }, [checked]);
+  }, [checked, parentElement]);
   return (
     <div
-      className={`buidler-theme-light ${
-        isDark ? 'buidler-theme-dark' : ''
-      } buidler-tw-quick-cast-container normal-button`}
+      className="buidler-theme buidler-tw-quick-cast-container normal-button"
       onClick={toggle}
     >
       {checked ? <IconFCCheck /> : <IconFCUncheck />}

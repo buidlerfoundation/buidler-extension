@@ -66,20 +66,36 @@ html {
   margin: 0 !important;
 }
 
-.buidler-theme-light {
-  --color-primary-text: rgba(15, 20, 25, 1);
-  --color-accent: #7c65c1;
-  --color-stroke: rgb(207, 217, 222);
-  --color-placeholder: #536471;
+.buidler-theme {
   font-family: 'TwitterChirp', -apple-system, BlinkMacSystemFont, 'Segoe UI',
     Roboto, Helvetica, Arial, sans-serif;
 }
 
-.buidler-theme-dark {
-  --color-primary-text: rgb(231, 233, 234);
+body.light .buidler-theme {
+  --color-accent: #7c65c1;
+  --color-stroke: #f3f3f3;
+  --color-placeholder: #536471;
+  --color-background-1: #ffffff;
+  --color-background-2: #f8f8f8;
+  --color-primary-text: #202020;
+}
+
+body.dark .buidler-theme {
   --color-accent: #7c65c1;
   --color-stroke: #242424;
   --color-placeholder: #71767b;
+  --color-background-1: #000000;
+  --color-background-2: #121212;
+  --color-primary-text: #e8e8e8;
+}
+
+body.dim .buidler-theme {
+  --color-accent: #7c65c1;
+  --color-stroke: rgb(66, 83, 100);
+  --color-placeholder: #71767b;
+  --color-background-1: rgb(21, 32, 43);
+  --color-background-2: rgb(39, 51, 64);
+  --color-primary-text: #e8e8e8;
 }
 
 .buidler-tweet-cast-container {
@@ -165,14 +181,14 @@ html {
   right: 0;
   padding: 0 10px;
   z-index: 999998;
-  background-color: #121212;
-  border-left: 1px solid #242424;
-  border-bottom: 1px solid #242424;
+  background-color: var(--color-background-2);
+  border-left: 1px solid var(--color-stroke);
+  border-bottom: 1px solid var(--color-stroke);
   border-bottom-left-radius: 10px;
 }
 
 .b-fc-label {
-  color: #e8e8e8;
+  color: var(--color-primary-text);
   font-weight: 600;
   font-size: 16px;
   line-height: 22px;
@@ -187,8 +203,8 @@ html {
   right: -500px;
   width: 500px;
   transition: right 0.5s ease-out 0s;
-  border-left: 1px solid #242424;
-  background-color: #191919;
+  border-left: 1px solid var(--color-stroke);
+  background-color: var(--color-background-1);
 }
 
 .b-fc-plugin-open {
