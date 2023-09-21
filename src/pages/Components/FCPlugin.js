@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import IconJumpIn from './SVG/IconJumpIn';
 import LogoFC from './SVG/LogoFC';
 import { twTheme } from '../../utils';
@@ -7,6 +7,7 @@ const FCPlugin = ({ signerId, open }) => {
   const [openPlugin, setOpenPlugin] = useState(open === 'true');
   const [loaded, setLoaded] = useState(false);
   const [dataSignerId, setDataSignerId] = useState('');
+  const initialTheme = useMemo(() => twTheme(), []);
   const togglePlugin = useCallback(
     () => setOpenPlugin((current) => !current),
     []
@@ -61,7 +62,7 @@ const FCPlugin = ({ signerId, open }) => {
         <LogoFC />
       </div>
       <div
-        className={`b-fc-plugin-container ${
+        className={`buidler-theme b-fc-plugin-container ${
           openPlugin ? 'b-fc-plugin-open' : ''
         }`}
       >
@@ -77,7 +78,7 @@ const FCPlugin = ({ signerId, open }) => {
           title="b-fc-plugin"
           src={`https://beta.buidler.app/plugin-fc/${
             signerId || ''
-          }?${new URLSearchParams({ theme: twTheme() })}`}
+          }?${new URLSearchParams({ theme: initialTheme })}`}
           id="fc-plugin-frame"
           onLoad={onLoadIframe}
           data-signer-id={signerId || dataSignerId}
