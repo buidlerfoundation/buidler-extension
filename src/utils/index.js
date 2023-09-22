@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import TwitterCast from '../pages/Components/TwitterCast';
 import TwitterQuickCast from '../pages/Components/TwitterQuickCast';
 import FCPlugin from '../pages/Components/FCPlugin';
+import AlertItem from '../pages/Components/AlertItem';
 
 let lastVerticalPosition = 'bottom';
 let lastHorizontalPosition = 'right';
@@ -109,6 +110,22 @@ function dragElement(elmnt) {
   }
 }
 
+export const showFCAlert = (url) => {
+  const alertContainer = document.getElementById('fc-plugin-alert');
+  if (alertContainer) {
+    const div = document.createElement('div');
+    const id = `${Math.random()}`;
+    div.id = id;
+    if (!alertContainer.firstChild) {
+      alertContainer.appendChild(div);
+    } else {
+      alertContainer.insertBefore(div, alertContainer.firstChild);
+    }
+    const element = ReactDOM.createRoot(div);
+    element.render(<AlertItem url={url} id={id} />);
+  }
+};
+
 export const handleMessage = () => {
   window.addEventListener('message', (e) => {
     if (
@@ -128,14 +145,18 @@ export const handleMessage = () => {
         // handle call back
       });
     }
-    // if (e.data.type === 'b-fc-plugin-open-tab') {
-    //   window.open(e.data.url, '_blank');
-    // }
+    if (e.data.type === 'b-fc-plugin-open-tab') {
+      showFCAlert(e.data.url);
+    }
   });
 };
 
 export const getFCPluginFrame = () => {
   return document.querySelector('#fc-plugin-frame');
+};
+
+const getFCPlugin = () => {
+  return document.querySelector('#buidler-fc-plugin');
 };
 
 export const twTheme = () => {
@@ -207,45 +228,63 @@ export const appendTwitterCastElement = () => {
   });
 };
 
+const handleTWTheme = () => {
+  if (
+    document.body.style.backgroundColor === 'rgb(255, 255, 255)' &&
+    !document.body.className.includes('light')
+  ) {
+    document.body.className = 'light';
+    const fcPluginFrame = getFCPluginFrame();
+    fcPluginFrame?.contentWindow?.postMessage?.(
+      { type: 'b-fc-update-tw-theme', payload: 'light' },
+      '*'
+    );
+  }
+  if (
+    document.body.style.backgroundColor === 'rgb(21, 32, 43)' &&
+    !document.body.className.includes('dim')
+  ) {
+    document.body.className = 'dim';
+    const fcPluginFrame = getFCPluginFrame();
+    fcPluginFrame?.contentWindow?.postMessage?.(
+      { type: 'b-fc-update-tw-theme', payload: 'dim' },
+      '*'
+    );
+  }
+  if (
+    document.body.style.backgroundColor === 'rgb(0, 0, 0)' &&
+    !document.body.className.includes('dark')
+  ) {
+    document.body.className = 'dark';
+    const fcPluginFrame = getFCPluginFrame();
+    fcPluginFrame?.contentWindow?.postMessage?.(
+      { type: 'b-fc-update-tw-theme', payload: 'dark' },
+      '*'
+    );
+  }
+};
+
+const handleTWDialog = () => {
+  const fcPlugin = getFCPlugin();
+  const mask = document.querySelector('div[data-testid="mask"]');
+  if (fcPlugin) {
+    if (mask && fcPlugin.style.display !== 'none') {
+      fcPlugin.style.display = 'none';
+    }
+    if (!mask && fcPlugin.style.display !== 'block') {
+      fcPlugin.style.display = 'block';
+    }
+  }
+};
+
 export const injectTwitterCast = () => {
   if (window.location.origin === 'https://twitter.com') {
     function onHTMLChange() {
       appendTwitterQuickCast();
       appendTwitterQuickCastExpand();
       appendTwitterCastElement();
-      if (
-        document.body.style.backgroundColor === 'rgb(255, 255, 255)' &&
-        !document.body.className.includes('light')
-      ) {
-        document.body.className = 'light';
-        const fcPluginFrame = getFCPluginFrame();
-        fcPluginFrame?.contentWindow?.postMessage?.(
-          { type: 'b-fc-update-tw-theme', payload: 'light' },
-          '*'
-        );
-      }
-      if (
-        document.body.style.backgroundColor === 'rgb(21, 32, 43)' &&
-        !document.body.className.includes('dim')
-      ) {
-        document.body.className = 'dim';
-        const fcPluginFrame = getFCPluginFrame();
-        fcPluginFrame?.contentWindow?.postMessage?.(
-          { type: 'b-fc-update-tw-theme', payload: 'dim' },
-          '*'
-        );
-      }
-      if (
-        document.body.style.backgroundColor === 'rgb(0, 0, 0)' &&
-        !document.body.className.includes('dark')
-      ) {
-        document.body.className = 'dark';
-        const fcPluginFrame = getFCPluginFrame();
-        fcPluginFrame?.contentWindow?.postMessage?.(
-          { type: 'b-fc-update-tw-theme', payload: 'dark' },
-          '*'
-        );
-      }
+      handleTWTheme();
+      handleTWDialog();
     }
     document.documentElement.addEventListener(
       'DOMSubtreeModified',

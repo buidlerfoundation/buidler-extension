@@ -85,6 +85,7 @@ const FCPlugin = ({ signerId, open }) => {
           data-open={openPlugin}
         />
       </div>
+      <div id="fc-plugin-alert" className="b-fc-alert-container"></div>
     </>
   );
 };
