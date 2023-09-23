@@ -286,6 +286,10 @@ export const injectTwitterCast = () => {
       handleTWTheme();
       handleTWDialog();
     }
+    document.documentElement.removeEventListener(
+      'DOMSubtreeModified',
+      onHTMLChange
+    );
     document.documentElement.addEventListener(
       'DOMSubtreeModified',
       onHTMLChange

@@ -10,8 +10,9 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
     toggle();
   }
   if (msg?.type === 'on-inject-iframe') {
+    const search = new URLSearchParams(window.location.search);
     injectFCPlugin({
-      signerId: msg?.signerId,
+      signerId: msg?.signerId || search?.get('b-signer-id'),
       open: msg?.openPlugin,
     });
   }
