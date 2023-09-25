@@ -190,6 +190,8 @@ export const appendTwitterQuickCastExpand = () => {
 export const appendTwitterQuickCast = () => {
   const quickCast = document.getElementById('buidler-tweet-quick-cast');
   if (quickCast) return;
+  const dialog = document.querySelector('div[role="dialog"]');
+  if (dialog) return;
   const toolBar = document.querySelector('div[data-testid="toolBar"]');
   if (!toolBar) return;
   const div = document.createElement('div');

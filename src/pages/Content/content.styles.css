@@ -211,7 +211,11 @@ body.dim .buidler-theme {
   right: 0;
 }
 
-@media (max-width: 575px) {
+#buidler-tweet-cast {
+  container-type: inline-size;
+}
+
+@container (max-width: 360px) {
   .buidler-tweet-cast-container {
     display: none;
   }
