@@ -1,5 +1,10 @@
 import { host } from '../../constant';
-import { handleMessage, injectFCPlugin, injectTwitterCast } from '../../utils';
+import {
+  handleMessage,
+  injectFCPlugin,
+  injectTwitterCast,
+  handleTWChangeUrl,
+} from '../../utils';
 
 document.documentElement.setAttribute('buidler-extension', true);
 
@@ -21,6 +26,7 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
   }
   if (msg?.type === 'on-tab-update') {
     injectTwitterCast();
+    handleTWChangeUrl(msg?.url);
   }
   if (msg?.type === 'on-frame-update') {
     // on-frame-update

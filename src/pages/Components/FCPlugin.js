@@ -50,6 +50,16 @@ const FCPlugin = ({ signerId, open }) => {
       setLoaded(true);
     }, 500);
   }, []);
+  const onCancelClick = useCallback((e) => {
+    e.stopPropagation();
+    const element = document.getElementById('fc-plugin-confirm-modal');
+    if (element) {
+      element.style.display = 'none';
+    }
+  }, []);
+  const preventParentClick = useCallback((e) => {
+    e.stopPropagation();
+  }, []);
   return (
     <>
       <div
@@ -76,9 +86,13 @@ const FCPlugin = ({ signerId, open }) => {
             opacity: loaded ? 1 : 0,
           }}
           title="b-fc-plugin"
-          src={`https://beta.buidler.app/plugin-fc/${
-            signerId || ''
-          }?${new URLSearchParams({ theme: initialTheme })}`}
+          src={`https://buidler.app/plugin-fc?${new URLSearchParams(
+            {
+              theme: initialTheme,
+              signer_id: signerId || '',
+              q: window.location.href,
+            }
+          )}`}
           id="fc-plugin-frame"
           onLoad={onLoadIframe}
           data-signer-id={signerId || dataSignerId}
@@ -86,6 +100,27 @@ const FCPlugin = ({ signerId, open }) => {
         />
       </div>
       <div id="fc-plugin-alert" className="b-fc-alert-container"></div>
+      <div
+        id="fc-plugin-confirm-modal"
+        className="buidler-theme b-fc-modal-container"
+        style={{ display: 'none' }}
+        onClick={onCancelClick}
+      >
+        <div className="b-fc-modal-wrap" onClick={preventParentClick}>
+          <span className="modal-title">Cast to Farcaster</span>
+          <span className="modal-description">
+            Are you sure you'd like to cast this content to Farcaster?
+          </span>
+          <div className="modal-actions">
+            <div className="btn-cancel" onClick={onCancelClick}>
+              Cancel
+            </div>
+            <div id="b-fc-btn-cast" className="btn-cast">
+              Cast
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 };

@@ -33,10 +33,6 @@ const TwitterCast = ({ article, index }) => {
       }
       const fcPluginFrame = getFCPluginFrame();
       const signerId = fcPluginFrame?.getAttribute('data-signer-id');
-      const dataOpen = fcPluginFrame?.getAttribute('data-open');
-      if (dataOpen === 'false') {
-        document.querySelector('#btn-fc-plugin')?.click?.();
-      }
       let type = 'tw-cast-queue';
       if (signerId) {
         type = 'tw-cast';
@@ -50,11 +46,21 @@ const TwitterCast = ({ article, index }) => {
         embeds: [{ url: `${window.location.origin}${url}` }],
       };
       if (!value.trim()) {
-        payload.mentions = [20108];
+        payload.mentions = [20386];
         payload.mentions_positions = [twUrl.length + 11];
       }
-      fcPluginFrame?.contentWindow?.postMessage?.({ type, payload }, '*');
-      setValue('');
+      const element = document.getElementById('fc-plugin-confirm-modal');
+      const btnCast = document.getElementById('b-fc-btn-cast');
+      btnCast.onclick = () => {
+        const dataOpen = fcPluginFrame?.getAttribute('data-open');
+        if (dataOpen === 'false') {
+          document.querySelector('#btn-fc-plugin')?.click?.();
+        }
+        fcPluginFrame?.contentWindow?.postMessage?.({ type, payload }, '*');
+        setValue('');
+        element.style.display = 'none';
+      };
+      element.style.display = 'block';
     },
     [isConversation, tweetUrl, value]
   );

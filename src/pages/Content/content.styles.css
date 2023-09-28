@@ -283,3 +283,77 @@ body.dim .buidler-theme {
   display: flex;
   flex-direction: column;
 }
+
+.b-fc-modal-container {
+  position: fixed;
+  z-index: 999999;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #000000bf;
+}
+
+.b-fc-modal-wrap {
+  background-color: var(--color-background-1);
+  border-radius: 10px;
+  border: 1px solid var(--color-stroke);
+  margin-top: 200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 40px 25px 20px 25px;
+  display: flex;
+  flex-direction: column;
+  width: 530px;
+}
+
+.b-fc-modal-wrap .modal-title {
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 25px;
+  color: var(--color-primary-text);
+}
+
+.b-fc-modal-wrap .modal-description {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 22px;
+  color: var(--color-placeholder);
+  margin-top: 25px;
+}
+
+.b-fc-modal-wrap .modal-actions {
+  display: flex;
+  align-items: center;
+  align-self: flex-end;
+  margin-top: 25px;
+}
+
+.b-fc-modal-wrap .modal-actions .btn-cancel {
+  cursor: pointer;
+  width: 84px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-placeholder);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 22px;
+}
+
+.b-fc-modal-wrap .modal-actions .btn-cast {
+  cursor: pointer;
+  width: 84px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 22px;
+  border-radius: 10px;
+  background-color: var(--color-accent);
+  margin-left: 10px;
+}

@@ -230,6 +230,16 @@ export const appendTwitterCastElement = () => {
   });
 };
 
+export const handleTWChangeUrl = (url) => {
+  if (url?.includes('https://twitter.com')) {
+    const fcPluginFrame = getFCPluginFrame();
+    fcPluginFrame?.contentWindow?.postMessage?.(
+      { type: 'b-fc-update-tw-url', payload: url },
+      '*'
+    );
+  }
+};
+
 const handleTWTheme = () => {
   if (
     document.body.style.backgroundColor === 'rgb(255, 255, 255)' &&
