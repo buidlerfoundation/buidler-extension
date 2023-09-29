@@ -1,6 +1,6 @@
 {
   "name": "x-caster",
-  "version": "1.0.24",
+  "version": "1.0.25",
   "description": "A Chrome extension that enables you to share tweets with Farcaster friends, reshaping your centralized social profile into a decentralized network.",
   "license": "MIT",
   "repository": {
