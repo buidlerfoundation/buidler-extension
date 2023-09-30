@@ -69,6 +69,12 @@ html {
 .buidler-theme {
   font-family: 'TwitterChirp', -apple-system, BlinkMacSystemFont, 'Segoe UI',
     Roboto, Helvetica, Arial, sans-serif;
+  --color-accent: #7c65c1;
+  --color-stroke: #f3f3f3;
+  --color-placeholder: #536471;
+  --color-background-1: #ffffff;
+  --color-background-2: #f8f8f8;
+  --color-primary-text: #202020;
 }
 
 body.light .buidler-theme {

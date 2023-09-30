@@ -12,10 +12,16 @@ const FCPlugin = ({ signerId, open }) => {
     () => setOpenPlugin((current) => !current),
     []
   );
+  const isTwitter = useMemo(
+    () => window.location.origin === 'https://twitter.com',
+    []
+  );
   useEffect(() => {
     chrome.storage.local.set({ Buidler_open_plugin: `${openPlugin}` });
-    setLoaded(false);
-  }, [openPlugin]);
+    if (isTwitter) {
+      setLoaded(false);
+    }
+  }, [isTwitter, openPlugin]);
   useEffect(() => {
     const twSidebar = document.querySelector(
       'div[data-testid="sidebarColumn"]'
@@ -96,7 +102,7 @@ const FCPlugin = ({ signerId, open }) => {
           onLoad={onLoadIframe}
           data-signer-id={signerId || dataSignerId}
           data-open={openPlugin}
-          key={`${openPlugin}`}
+          key={isTwitter ? `${openPlugin}` : undefined}
         />
       </div>
       <div id="fc-plugin-alert" className="b-fc-alert-container"></div>

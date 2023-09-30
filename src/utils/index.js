@@ -248,15 +248,17 @@ export const appendTwitterCastElement = () => {
 };
 
 export const handleTWChangeUrl = (url) => {
-  if (url?.includes('https://twitter.com')) {
-    const fcPluginFrame = getFCPluginFrame();
-    const twSidebar = document.querySelector(
-      'div[data-testid="sidebarColumn"]'
-    );
-    const dataOpen = fcPluginFrame?.getAttribute('data-open');
-    if (twSidebar) {
-      if (dataOpen) {
-        twSidebar.style.display = 'none';
+  const fcPluginFrame = getFCPluginFrame();
+  if (fcPluginFrame) {
+    if (url?.includes('https://twitter.com')) {
+      const twSidebar = document.querySelector(
+        'div[data-testid="sidebarColumn"]'
+      );
+      const dataOpen = fcPluginFrame?.getAttribute('data-open');
+      if (twSidebar) {
+        if (dataOpen) {
+          twSidebar.style.display = 'none';
+        }
       }
     }
     fcPluginFrame?.contentWindow?.postMessage?.(
@@ -336,13 +338,9 @@ export const injectTwitterCast = () => {
 };
 
 export const injectFCPlugin = (params) => {
-  if (window.location.origin === 'https://twitter.com') {
-    const div = document.createElement('div');
-    div.id = 'buidler-fc-plugin';
-    document.body.appendChild(div);
-    const element = ReactDOM.createRoot(div);
-    element.render(
-      <FCPlugin signerId={params?.signerId} open={params?.open} />
-    );
-  }
+  const div = document.createElement('div');
+  div.id = 'buidler-fc-plugin';
+  document.body.appendChild(div);
+  const element = ReactDOM.createRoot(div);
+  element.render(<FCPlugin signerId={params?.signerId} open={params?.open} />);
 };
