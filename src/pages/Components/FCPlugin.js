@@ -14,6 +14,7 @@ const FCPlugin = ({ signerId, open }) => {
   );
   useEffect(() => {
     chrome.storage.local.set({ Buidler_open_plugin: `${openPlugin}` });
+    setLoaded(false);
   }, [openPlugin]);
   useEffect(() => {
     const twSidebar = document.querySelector(
@@ -86,17 +87,16 @@ const FCPlugin = ({ signerId, open }) => {
             opacity: loaded ? 1 : 0,
           }}
           title="b-fc-plugin"
-          src={`https://buidler.app/plugin-fc?${new URLSearchParams(
-            {
-              theme: initialTheme,
-              signer_id: signerId || '',
-              q: window.location.href,
-            }
-          )}`}
+          src={`https://buidler.app/plugin-fc?${new URLSearchParams({
+            theme: initialTheme,
+            signer_id: signerId || '',
+            q: window.location.href,
+          })}`}
           id="fc-plugin-frame"
           onLoad={onLoadIframe}
           data-signer-id={signerId || dataSignerId}
           data-open={openPlugin}
+          key={`${openPlugin}`}
         />
       </div>
       <div id="fc-plugin-alert" className="b-fc-alert-container"></div>

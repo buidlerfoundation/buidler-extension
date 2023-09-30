@@ -52,10 +52,10 @@ const TwitterCast = ({ article, index }) => {
       const element = document.getElementById('fc-plugin-confirm-modal');
       const btnCast = document.getElementById('b-fc-btn-cast');
       btnCast.onclick = () => {
-        const dataOpen = fcPluginFrame?.getAttribute('data-open');
-        if (dataOpen === 'false') {
-          document.querySelector('#btn-fc-plugin')?.click?.();
-        }
+        // const dataOpen = fcPluginFrame?.getAttribute('data-open');
+        // if (dataOpen === 'false') {
+        //   document.querySelector('#btn-fc-plugin')?.click?.();
+        // }
         fcPluginFrame?.contentWindow?.postMessage?.({ type, payload }, '*');
         setValue('');
         element.style.display = 'none';

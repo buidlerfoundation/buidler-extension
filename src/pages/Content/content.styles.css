@@ -357,3 +357,12 @@ body.dim .buidler-theme {
   background-color: var(--color-accent);
   margin-left: 10px;
 }
+
+.f-tw-action {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 16px;
+  color: #c848ff;
+}

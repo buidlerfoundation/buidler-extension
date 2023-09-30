@@ -4,6 +4,7 @@ import TwitterCast from '../pages/Components/TwitterCast';
 import TwitterQuickCast from '../pages/Components/TwitterQuickCast';
 import FCPlugin from '../pages/Components/FCPlugin';
 import AlertItem from '../pages/Components/AlertItem';
+import TwitterAction from '../pages/Components/TwitterAction';
 
 let lastVerticalPosition = 'bottom';
 let lastHorizontalPosition = 'right';
@@ -214,6 +215,7 @@ export const appendTwitterCastElement = () => {
     if (dataTestId === 'tweet') {
       const div = document.createElement('div');
       div.id = `buidler-tweet-cast`;
+      div.style.display = 'none';
       if (!article.querySelector(`#buidler-tweet-cast`)) {
         if (tabIndex === '-1') {
           article.childNodes?.[0]?.appendChild(div);
@@ -225,6 +227,21 @@ export const appendTwitterCastElement = () => {
         }
         const element = ReactDOM.createRoot(div);
         element.render(<TwitterCast article={article} index={idx} />);
+        const actionElementGroup = article.querySelector('div[role="group"]');
+        if (actionElementGroup) {
+          const actionDiv = document.createElement('div');
+          actionDiv.id = `tweet-cast-action`;
+          actionDiv.style.flex = '1';
+          actionDiv.style.alignSelf = 'center';
+          actionElementGroup.insertBefore(
+            actionDiv,
+            actionElementGroup.lastChild
+          );
+          const FCElement = ReactDOM.createRoot(actionDiv);
+          FCElement.render(
+            <TwitterAction twCastElement={div} article={article} index={idx} />
+          );
+        }
       }
     }
   });
@@ -233,6 +250,15 @@ export const appendTwitterCastElement = () => {
 export const handleTWChangeUrl = (url) => {
   if (url?.includes('https://twitter.com')) {
     const fcPluginFrame = getFCPluginFrame();
+    const twSidebar = document.querySelector(
+      'div[data-testid="sidebarColumn"]'
+    );
+    const dataOpen = fcPluginFrame?.getAttribute('data-open');
+    if (twSidebar) {
+      if (dataOpen) {
+        twSidebar.style.display = 'none';
+      }
+    }
     fcPluginFrame?.contentWindow?.postMessage?.(
       { type: 'b-fc-update-tw-url', payload: url },
       '*'
