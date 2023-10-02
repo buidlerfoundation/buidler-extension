@@ -74,6 +74,7 @@ html {
   --color-placeholder: #536471;
   --color-background-1: #ffffff;
   --color-background-2: #f8f8f8;
+  --color-background-4: #f1f1f1;
   --color-primary-text: #202020;
 }
 
@@ -83,6 +84,7 @@ body.light .buidler-theme {
   --color-placeholder: #536471;
   --color-background-1: #ffffff;
   --color-background-2: #f8f8f8;
+  --color-background-4: #f1f1f1;
   --color-primary-text: #202020;
 }
 
@@ -92,6 +94,7 @@ body.dark .buidler-theme {
   --color-placeholder: #71767b;
   --color-background-1: #000000;
   --color-background-2: #121212;
+  --color-background-4: #363636;
   --color-primary-text: #e8e8e8;
 }
 
@@ -101,6 +104,7 @@ body.dim .buidler-theme {
   --color-placeholder: #71767b;
   --color-background-1: rgb(21, 32, 43);
   --color-background-2: rgb(39, 51, 64);
+  --color-background-4: #71767b;
   --color-primary-text: #e8e8e8;
 }
 
@@ -179,18 +183,50 @@ body.dim .buidler-theme {
 }
 
 .b-fc-open-plugin-container {
-  display: flex;
-  align-items: center;
-  height: 45px;
   position: fixed;
   top: 0;
   right: 0;
-  padding: 0 10px;
   z-index: 999998;
+}
+
+.b-fc-open-plugin-container .btn-toggle-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.b-fc-open-plugin-container .btn-toggle-wrap .btn-toggle {
+  display: flex;
+  align-items: center;
+  height: 45px;
+  padding: 0 10px;
   background-color: var(--color-background-2);
   border-left: 1px solid var(--color-stroke);
   border-bottom: 1px solid var(--color-stroke);
   border-bottom-left-radius: 10px;
+}
+
+.b-fc-open-plugin-container .btn-toggle-wrap .plugin-menu {
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  background-color: var(--color-background-2);
+  padding: 5px 0;
+  margin-top: 10px;
+}
+
+.b-fc-open-plugin-container .btn-toggle-wrap .plugin-menu .menu-item {
+  display: flex;
+  align-items: center;
+  width: 200px;
+  height: 45px;
+  padding: 0 15px;
+  color: var(--color-primary-text);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 22px;
+  cursor: pointer;
 }
 
 .b-fc-label {

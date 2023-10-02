@@ -127,6 +127,19 @@ export const showFCAlert = (url) => {
   }
 };
 
+const onClearData = () => {
+  const quickCast = document.getElementById('buidler-tweet-quick-cast');
+  const quickCastExpand = document.getElementById(
+    'buidler-tweet-quick-cast-expand'
+  );
+  if (quickCast) {
+    quickCast.style.display = 'none';
+  }
+  if (quickCastExpand) {
+    quickCastExpand.style.display = 'none';
+  }
+};
+
 export const handleMessage = () => {
   window.addEventListener('message', (e) => {
     if (
@@ -135,6 +148,7 @@ export const handleMessage = () => {
     ) {
       if (e.data.type === 'buidler-plugin-clear-cookie') {
         isAuthenticated = false;
+        onClearData();
       }
       if (
         e.data.type === 'buidler-plugin-set-cookie' &&

@@ -1,6 +1,6 @@
 import React from 'react';
 
-const LogoFC = () => {
+const LogoFC = ({ style }) => {
   return (
     <svg
       width="25"
@@ -8,6 +8,7 @@ const LogoFC = () => {
       viewBox="0 0 25 25"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      style={style}
     >
       <rect width="25" height="25" rx="5.55556" fill="#855DCD" />
       <path

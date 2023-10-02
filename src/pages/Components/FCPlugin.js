@@ -2,12 +2,19 @@ import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import IconJumpIn from './SVG/IconJumpIn';
 import LogoFC from './SVG/LogoFC';
 import { twTheme } from '../../utils';
+import IconMenuMini from './SVG/IconMenuMini';
+import IconMenuClose from './SVG/IconMenuClose';
 
 const FCPlugin = ({ signerId, open }) => {
   const [openPlugin, setOpenPlugin] = useState(open === 'true');
+  const [openMenu, setOpenMenu] = useState(false);
+  const [isMinimized, setMinimized] = useState(false);
+  const [isClosed, setClosed] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [dataSignerId, setDataSignerId] = useState('');
   const initialTheme = useMemo(() => twTheme(), []);
+  const showMenu = useCallback(() => setOpenMenu(true), []);
+  const hideMenu = useCallback(() => setOpenMenu(false), []);
   const togglePlugin = useCallback(
     () => setOpenPlugin((current) => !current),
     []
@@ -16,11 +23,9 @@ const FCPlugin = ({ signerId, open }) => {
     () => window.location.origin === 'https://twitter.com',
     []
   );
+  const initialUrl = useMemo(() => window.location.href, []);
   useEffect(() => {
     chrome.storage.local.set({ Buidler_open_plugin: `${openPlugin}` });
-    if (isTwitter) {
-      setLoaded(false);
-    }
   }, [isTwitter, openPlugin]);
   useEffect(() => {
     const twSidebar = document.querySelector(
@@ -67,16 +72,61 @@ const FCPlugin = ({ signerId, open }) => {
   const preventParentClick = useCallback((e) => {
     e.stopPropagation();
   }, []);
+  const onMinimizeClick = useCallback(
+    (e) => {
+      e.stopPropagation();
+      setMinimized(true);
+      hideMenu();
+    },
+    [hideMenu]
+  );
+  const onCloseClick = useCallback(
+    (e) => {
+      e.stopPropagation();
+      setClosed(true);
+      hideMenu();
+    },
+    [hideMenu]
+  );
   return (
     <>
       <div
         className="buidler-theme b-fc-open-plugin-container normal-button"
         id="btn-fc-plugin"
         onClick={togglePlugin}
+        style={{ display: isClosed ? 'none' : 'block' }}
       >
-        <IconJumpIn />
-        <span className="b-fc-label">Open Farcaster</span>
-        <LogoFC />
+        <div
+          className="btn-toggle-wrap"
+          onMouseEnter={showMenu}
+          onMouseLeave={hideMenu}
+        >
+          <div className="btn-toggle">
+            {!isMinimized && (
+              <>
+                <IconJumpIn />
+                <span className="b-fc-label">Open Farcaster</span>
+              </>
+            )}
+            <LogoFC style={isMinimized ? { opacity: 0.7 } : {}} />
+          </div>
+          {openMenu && (
+            <div className="plugin-menu">
+              <div
+                className="menu-item"
+                style={{ display: isMinimized ? 'none' : 'flex' }}
+                onClick={onMinimizeClick}
+              >
+                <IconMenuMini />
+                <span style={{ marginLeft: 15 }}>Minimize</span>
+              </div>
+              <div className="menu-item" onClick={onCloseClick}>
+                <IconMenuClose />
+                <span style={{ marginLeft: 15 }}>Close</span>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
       <div
         className={`buidler-theme b-fc-plugin-container ${
@@ -96,13 +146,12 @@ const FCPlugin = ({ signerId, open }) => {
           src={`https://buidler.app/plugin-fc?${new URLSearchParams({
             theme: initialTheme,
             signer_id: signerId || '',
-            q: window.location.href,
+            q: initialUrl,
           })}`}
           id="fc-plugin-frame"
           onLoad={onLoadIframe}
-          data-signer-id={signerId || dataSignerId}
+          data-signer-id={dataSignerId}
           data-open={openPlugin}
-          key={isTwitter ? `${openPlugin}` : undefined}
         />
       </div>
       <div id="fc-plugin-alert" className="b-fc-alert-container"></div>
