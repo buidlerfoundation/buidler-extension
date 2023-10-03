@@ -102,7 +102,7 @@ html {
   --color-placeholder: #536471;
   --color-background-1: #ffffff;
   --color-background-2: #f8f8f8;
-  --color-background-4: #f1f1f1;
+  --color-background-4: #bbbbbb;
   --color-primary-text: #202020;
 }
 
@@ -112,7 +112,7 @@ body.light .buidler-theme {
   --color-placeholder: #536471;
   --color-background-1: #ffffff;
   --color-background-2: #f8f8f8;
-  --color-background-4: #f1f1f1;
+  --color-background-4: #bbbbbb;
   --color-primary-text: #202020;
 }
 
@@ -242,6 +242,7 @@ body.dim .buidler-theme {
   background-color: var(--color-background-2);
   padding: 5px 0;
   margin-top: 10px;
+  margin-right: 10px;
 }
 
 .b-fc-open-plugin-container .btn-toggle-wrap .plugin-menu .menu-item {

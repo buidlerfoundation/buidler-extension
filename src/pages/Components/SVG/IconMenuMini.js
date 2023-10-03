@@ -14,7 +14,7 @@ const IconMenuMini = () => {
           fillRule="evenodd"
           clipRule="evenodd"
           d="M12.5 22.5C18.0228 22.5 22.5 18.0228 22.5 12.5C22.5 6.97715 18.0228 2.5 12.5 2.5C6.97715 2.5 2.5 6.97715 2.5 12.5C2.5 18.0228 6.97715 22.5 12.5 22.5Z"
-          fill="var(--color-primary-text)"
+          fill="#ffffff"
         />
       </g>
       <path
