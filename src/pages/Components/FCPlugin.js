@@ -101,14 +101,17 @@ const FCPlugin = ({ signerId, open }) => {
           onMouseEnter={showMenu}
           onMouseLeave={hideMenu}
         >
-          <div className="btn-toggle">
+          <div
+            className="btn-toggle"
+            style={isMinimized ? { opacity: 0.7 } : {}}
+          >
             {!isMinimized && (
               <>
                 <IconJumpIn />
                 <span className="b-fc-label">Open Farcaster</span>
               </>
             )}
-            <LogoFC style={isMinimized ? { opacity: 0.7 } : {}} />
+            <LogoFC />
           </div>
           {openMenu && (
             <div className="plugin-menu">
