@@ -4,15 +4,15 @@ import {
   injectFCPlugin,
   injectTwitterCast,
   handleTWChangeUrl,
+  toggleBtnPlugin,
 } from '../../utils';
 
 document.documentElement.setAttribute('buidler-extension', true);
 
-const toggle = () => {};
 chrome.runtime.onMessage.addListener((msg, sender, response) => {
   response();
   if (msg?.type === 'toggle-buidler-extension') {
-    toggle();
+    toggleBtnPlugin();
   }
   if (msg?.type === 'on-inject-iframe') {
     const search = new URLSearchParams(window.location.search);

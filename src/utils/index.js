@@ -358,3 +358,14 @@ export const injectFCPlugin = (params) => {
   const element = ReactDOM.createRoot(div);
   element.render(<FCPlugin signerId={params?.signerId} open={params?.open} />);
 };
+
+export const toggleBtnPlugin = () => {
+  const element = document.getElementById('btn-fc-plugin');
+  if (element) {
+    if (element.style.display === 'none') {
+      element.style.display = 'block';
+    } else {
+      element?.click?.();
+    }
+  }
+};

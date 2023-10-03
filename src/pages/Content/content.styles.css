@@ -2,6 +2,34 @@ html {
   zoom: 1 !important;
 }
 
+@font-face {
+  font-family: 'SF-UI-Text';
+  src: url('chrome-extension://__MSG_@@extension_id__/font/SFUIText-Regular.woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'SF-UI-Text';
+  src: url('chrome-extension://__MSG_@@extension_id__/font/SFUIText-Medium.woff');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'SF-UI-Text';
+  src: url('chrome-extension://__MSG_@@extension_id__/font/SFUIText-Semibold.woff');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'SF-UI-Text';
+  src: url('chrome-extension://__MSG_@@extension_id__/font/SFUIText-Bold.woff');
+  font-weight: 700;
+  font-style: normal;
+}
+
 .normal-button:hover {
   cursor: pointer;
 }
@@ -21,14 +49,14 @@ html {
 }
 
 .buidler-loader {
-  border: 2px solid #191919;
-  border-top: 2px solid #727272;
-  border-right: 2px solid #727272;
-  border-bottom: 2px solid #727272;
+  border: 2.5px solid var(--color-background-1);
+  border-top: 2.5px solid var(--color-placeholder);
+  border-right: 2.5px solid var(--color-placeholder);
+  border-bottom: 2.5px solid var(--color-placeholder);
   border-radius: 50%;
   width: 30px;
   height: 30px;
-  animation: spin 1s linear infinite;
+  animation: spin 700ms linear infinite;
 }
 
 @keyframes spin {
@@ -67,8 +95,8 @@ html {
 }
 
 .buidler-theme {
-  font-family: 'TwitterChirp', -apple-system, BlinkMacSystemFont, 'Segoe UI',
-    Roboto, Helvetica, Arial, sans-serif;
+  font-family: SF-UI-Text, 'TwitterChirp', -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --color-accent: #7c65c1;
   --color-stroke: #f3f3f3;
   --color-placeholder: #536471;

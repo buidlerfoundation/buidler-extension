@@ -4,12 +4,12 @@ import LogoFC from './SVG/LogoFC';
 import { twTheme } from '../../utils';
 import IconMenuMini from './SVG/IconMenuMini';
 import IconMenuClose from './SVG/IconMenuClose';
+import Spinner from './Spinner';
 
 const FCPlugin = ({ signerId, open }) => {
   const [openPlugin, setOpenPlugin] = useState(open === 'true');
   const [openMenu, setOpenMenu] = useState(false);
   const [isMinimized, setMinimized] = useState(false);
-  const [isClosed, setClosed] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [dataSignerId, setDataSignerId] = useState('');
   const initialTheme = useMemo(() => twTheme(), []);
@@ -83,8 +83,11 @@ const FCPlugin = ({ signerId, open }) => {
   const onCloseClick = useCallback(
     (e) => {
       e.stopPropagation();
-      setClosed(true);
       hideMenu();
+      const element = document.getElementById('btn-fc-plugin');
+      if (element) {
+        element.style.display = 'none';
+      }
     },
     [hideMenu]
   );
@@ -94,7 +97,6 @@ const FCPlugin = ({ signerId, open }) => {
         className="buidler-theme b-fc-open-plugin-container normal-button"
         id="btn-fc-plugin"
         onClick={togglePlugin}
-        style={{ display: isClosed ? 'none' : 'block' }}
       >
         <div
           className="btn-toggle-wrap"
@@ -136,26 +138,29 @@ const FCPlugin = ({ signerId, open }) => {
           openPlugin ? 'b-fc-plugin-open' : ''
         }`}
       >
-        <iframe
-          style={{
-            width: '100%',
-            height: '100%',
-            border: 'none',
-            backgroundColor: 'var(--color-background-1)',
-            colorScheme: 'auto',
-            opacity: loaded ? 1 : 0,
-          }}
-          title="b-fc-plugin"
-          src={`https://buidler.app/plugin-fc?${new URLSearchParams({
-            theme: initialTheme,
-            signer_id: signerId || '',
-            q: initialUrl,
-          })}`}
-          id="fc-plugin-frame"
-          onLoad={onLoadIframe}
-          data-signer-id={dataSignerId}
-          data-open={openPlugin}
-        />
+        <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+          <iframe
+            style={{
+              width: '100%',
+              height: '100%',
+              border: 'none',
+              backgroundColor: 'var(--color-background-1)',
+              colorScheme: 'auto',
+              opacity: loaded ? 1 : 0,
+            }}
+            title="b-fc-plugin"
+            src={`https://buidler.app/plugin-fc?${new URLSearchParams({
+              theme: initialTheme,
+              signer_id: signerId || '',
+              q: initialUrl,
+            })}`}
+            id="fc-plugin-frame"
+            onLoad={onLoadIframe}
+            data-signer-id={dataSignerId}
+            data-open={openPlugin}
+          />
+          {!loaded && <Spinner />}
+        </div>
       </div>
       <div id="fc-plugin-alert" className="b-fc-alert-container"></div>
       <div
