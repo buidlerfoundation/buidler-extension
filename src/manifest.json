@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "XCaster - Turn your X into Farcaster",
-  "description": "A Chrome extension that enables you to share tweets with Farcaster friends.",
+  "name": "Buidler - A web annotation on Farcaster",
+  "description": "A social annotation built on top of Farcaster, enabling users to discuss any web content.",
   "options_page": "options.html",
   "background": { "service_worker": "background.bundle.js" },
   "action": {
