@@ -1,3 +1,5 @@
+import '@webcomponents/custom-elements/custom-elements.min.js';
+
 const highlightColor = 'rgb(213, 234, 255)';
 
 const template = `
@@ -34,7 +36,7 @@ const styled = ({ display = 'none', left = 0, top = 0 }) => `
   }
 `;
 
-export class MediumHighlighter extends HTMLElement {
+class MediumHighlighter extends HTMLElement {
   constructor() {
     super();
     this.render();
@@ -88,3 +90,5 @@ export class MediumHighlighter extends HTMLElement {
     range.insertNode(clone);
   }
 }
+
+window.customElements.define('medium-highlighter', MediumHighlighter);

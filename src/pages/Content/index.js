@@ -7,9 +7,7 @@ import {
   toggleBtnPlugin,
   injectHighlight,
 } from '../../utils';
-import { MediumHighlighter } from '../highlight/template';
-
-window.customElements.define('medium-highlighter', MediumHighlighter);
+import '../highlight/template';
 
 document.documentElement.setAttribute('buidler-extension', true);
 
