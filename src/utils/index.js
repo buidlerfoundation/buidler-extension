@@ -374,17 +374,41 @@ export const injectHighlight = () => {
   const mediumHighlighter = document.createElement('medium-highlighter');
   document.body.appendChild(mediumHighlighter);
 
-  const setMarkerPosition = (markerPosition) =>
-    mediumHighlighter.setAttribute(
-      'markerPosition',
-      JSON.stringify(markerPosition)
-    );
+  const setMarkerPosition = (markerPosition) => {
+    const menuHighlight =
+      mediumHighlighter.shadowRoot.getElementById('mediumHighlighter');
+    menuHighlight.style.display = markerPosition.display;
+    if (markerPosition.display === 'flex') {
+      menuHighlight.style.position = 'absolute';
+      menuHighlight.style.top = `${markerPosition.top}px`;
+      menuHighlight.style.left = `${markerPosition.left}px`;
+    }
+  };
 
   const getSelectedText = () => window.getSelection().toString();
 
-  document.addEventListener('click', () => {
+  document.addEventListener('click', (e) => {
     if (getSelectedText().length > 0) {
       setMarkerPosition(getMarkerPosition());
+    }
+    if (e.target.id.includes('b-highlight-xxx')) {
+      const rangeBounds = e.target.getBoundingClientRect();
+      const menuHighlighter =
+        mediumHighlighter.shadowRoot.getElementById('menuHighlighter');
+      menuHighlighter.style.display = 'flex';
+      menuHighlighter.style.position = 'absolute';
+      menuHighlighter.style.top = `${rangeBounds.top - 30}px`;
+      menuHighlighter.style.left = `${
+        rangeBounds.left + rangeBounds.width / 2 - 20
+      }px`;
+      menuHighlighter.setAttribute('data-element-id', e.target.id);
+    } else {
+      const menuHighlighter =
+        mediumHighlighter.shadowRoot.getElementById('menuHighlighter');
+      if (menuHighlighter.style.display === 'flex') {
+        menuHighlighter.style.display = 'none';
+      }
+      menuHighlighter.removeAttribute('data-element-id');
     }
   });
 
