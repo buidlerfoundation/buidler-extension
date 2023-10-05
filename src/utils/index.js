@@ -164,7 +164,7 @@ export const handleMessage = () => {
       showFCAlert(e.data.url);
     }
     if (e.data.type === 'b-fc-copy-content') {
-      navigator.clipboard.write(e.data.payload);
+      navigator.clipboard.writeText(e.data.payload);
     }
   });
 };
