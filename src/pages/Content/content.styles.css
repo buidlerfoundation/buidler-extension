@@ -483,3 +483,7 @@ body.dim .buidler-theme {
   line-height: 16px;
   color: #c848ff;
 }
+
+.buidler-highlight {
+  cursor: pointer;
+}

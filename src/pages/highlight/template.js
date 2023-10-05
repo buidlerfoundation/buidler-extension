@@ -1,11 +1,8 @@
-import '@webcomponents/custom-elements/custom-elements.min.js';
-import { removeHighlight } from '.';
+const highlightColor = 'rgb(249, 244, 127)';
 
-const highlightColor = 'rgb(213, 234, 255)';
-
-const template = `
+export const template = `
   <template id="highlightTemplate">
-    <div class="highlight" style="background-color: ${highlightColor}; display: inline"></div>
+    <div class="buidler-highlight" style="background-color: ${highlightColor}; display: inline; color: rgb(53, 53, 53);"></div>
   </template>
 
   <button id="mediumHighlighter">
@@ -13,24 +10,22 @@ const template = `
   </button>
 
   <div id="menuHighlighter">
-    <div id="btnNote">Note</div>
-    <div id="btnDelete">Delete</div>
+    <div id="btnNote" class="cursor-pointer">Note</div>
+    <div id="btnDelete" class="cursor-pointer">Delete</div>
   </div>
 `;
 
-const styled = ({ display = 'none', left = 0, top = 0 }) => `
+export const styled = () => `
   #mediumHighlighter {
     align-items: center;
     background-color: black;
     border-radius: 5px;
     border: none;
     cursor: pointer;
-    display: ${display};
+    display: none;
     justify-content: center;
-    left: ${left}px;
     padding: 5px 10px;
     position: fixed;
-    top: ${top}px;
     width: 40px;
     z-index: 9999;
   }
@@ -40,70 +35,7 @@ const styled = ({ display = 'none', left = 0, top = 0 }) => `
   .text-marker:hover {
     fill: ${highlightColor};
   }
+  .cursor-pointer {
+    cursor: pointer;
+  }
 `;
-
-class MediumHighlighter extends HTMLElement {
-  constructor() {
-    super();
-    this.render();
-  }
-
-  get markerPosition() {
-    return JSON.parse(this.getAttribute('markerPosition') || '{}');
-  }
-
-  get styleElement() {
-    return this.shadowRoot.querySelector('style');
-  }
-
-  get highlightTemplate() {
-    return this.shadowRoot.getElementById('highlightTemplate');
-  }
-
-  static get observedAttributes() {
-    return ['markerPosition'];
-  }
-
-  render() {
-    this.attachShadow({ mode: 'open' });
-    const style = document.createElement('style');
-    style.textContent = styled({});
-    this.shadowRoot.appendChild(style);
-    this.shadowRoot.innerHTML += template;
-    this.shadowRoot
-      .getElementById('mediumHighlighter')
-      .addEventListener('click', () => this.highlightSelection());
-    this.shadowRoot
-      .getElementById('btnDelete')
-      .addEventListener('click', () => {
-        const menuHighlighter =
-          this.shadowRoot.getElementById('menuHighlighter');
-        const elementId = menuHighlighter.getAttribute('data-element-id');
-        removeHighlight(elementId);
-      });
-  }
-
-  attributeChangedCallback(name, oldValue, newValue) {
-    if (name === 'markerPosition') {
-      this.styleElement.textContent = styled(this.markerPosition);
-    }
-  }
-
-  highlightSelection() {
-    var userSelection = window.getSelection();
-    for (let i = 0; i < userSelection.rangeCount; i++) {
-      this.highlightRange(userSelection.getRangeAt(i));
-    }
-    window.getSelection().empty();
-  }
-
-  highlightRange(range) {
-    const clone =
-      this.highlightTemplate.cloneNode(true).content.firstElementChild;
-    clone.id = 'b-highlight-xxx';
-    clone.appendChild(range.extractContents());
-    range.insertNode(clone);
-  }
-}
-
-window.customElements.define('medium-highlighter', MediumHighlighter);

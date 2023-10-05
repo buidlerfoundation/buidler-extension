@@ -390,8 +390,7 @@ export const injectHighlight = () => {
   document.addEventListener('click', (e) => {
     if (getSelectedText().length > 0) {
       setMarkerPosition(getMarkerPosition());
-    }
-    if (e.target.id.includes('b-highlight-xxx')) {
+    } else if (e.target.id.includes('b-highlight')) {
       const rangeBounds = e.target.getBoundingClientRect();
       const menuHighlighter =
         mediumHighlighter.shadowRoot.getElementById('menuHighlighter');
