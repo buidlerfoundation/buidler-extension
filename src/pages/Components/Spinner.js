@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Spinner = () => {
+const Spinner = ({ width = 30, height = 30 }) => {
   return (
     <div
       style={{
@@ -14,7 +14,18 @@ const Spinner = () => {
         justifyContent: 'center',
       }}
     >
-      <div className="buidler-loader" />
+      <span style={{ width, height }} className="buidler-progress-root">
+        <svg viewBox="22 22 44 44">
+          <circle
+            cx="44"
+            cy="44"
+            r="20.2"
+            fill="none"
+            strokeWidth="3.6"
+            className="buidler-progress"
+          />
+        </svg>
+      </span>
     </div>
   );
 };

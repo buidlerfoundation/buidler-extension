@@ -50,13 +50,55 @@ html {
 
 .buidler-loader {
   border: 2.5px solid var(--color-background-1);
-  border-top: 2.5px solid var(--color-placeholder);
-  border-right: 2.5px solid var(--color-placeholder);
-  border-bottom: 2.5px solid var(--color-placeholder);
+  border-top: 2.5px solid var(--color-secondary-text);
+  border-right: 2.5px solid var(--color-secondary-text);
+  border-bottom: 2.5px solid var(--color-secondary-text);
   border-radius: 50%;
   width: 30px;
   height: 30px;
   animation: spin 700ms linear infinite;
+}
+
+.buidler-progress-root {
+  display: inline-block;
+  animation: progress-root 1.4s linear infinite;
+}
+
+.buidler-progress {
+  stroke: var(--color-secondary-text);
+  stroke-dasharray: 80px, 200px;
+  stroke-dashoffset: 0;
+  animation: progress 1.4s ease-in-out infinite;
+}
+
+@keyframes progress-root {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes progress {
+  0% {
+    stroke-dasharray: 1px, 200px;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 100px, 200px;
+    stroke-dashoffset: -15px;
+  }
+  100% {
+    stroke-dasharray: 100px, 200px;
+    stroke-dashoffset: -125px;
+  }
 }
 
 @keyframes spin {
@@ -104,6 +146,7 @@ html {
   --color-background-2: #f8f8f8;
   --color-background-4: #bbbbbb;
   --color-primary-text: #202020;
+  --color-secondary-text: #536471;
 }
 
 body.light .buidler-theme {
@@ -114,6 +157,7 @@ body.light .buidler-theme {
   --color-background-2: #f8f8f8;
   --color-background-4: #bbbbbb;
   --color-primary-text: #202020;
+  --color-secondary-text: #536471;
 }
 
 body.dark .buidler-theme {
@@ -124,6 +168,7 @@ body.dark .buidler-theme {
   --color-background-2: #121212;
   --color-background-4: #363636;
   --color-primary-text: #e8e8e8;
+  --color-secondary-text: #a0a3ad;
 }
 
 body.dim .buidler-theme {
@@ -134,6 +179,7 @@ body.dim .buidler-theme {
   --color-background-2: rgb(39, 51, 64);
   --color-background-4: #71767b;
   --color-primary-text: #e8e8e8;
+  --color-secondary-text: #a0a3ad;
 }
 
 .buidler-tweet-cast-container {
