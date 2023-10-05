@@ -163,6 +163,9 @@ export const handleMessage = () => {
     if (e.data.type === 'b-fc-plugin-open-tab') {
       showFCAlert(e.data.url);
     }
+    if (e.data.type === 'b-fc-copy-content') {
+      navigator.clipboard.write(e.data.payload);
+    }
   });
 };
 
