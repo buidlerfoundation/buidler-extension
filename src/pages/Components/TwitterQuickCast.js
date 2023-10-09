@@ -40,7 +40,7 @@ const TwitterQuickCast = ({parentElement}) => {
   }, [checked, parentElement]);
   return (
     <div
-      className="buidler-theme buidler-tw-quick-cast-container normal-button"
+      className="buidler-theme buidler-tw-quick-cast-container b-fc-normal-button"
       onClick={toggle}
     >
       {checked ? <IconFCCheck /> : <IconFCUncheck />}

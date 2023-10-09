@@ -140,6 +140,16 @@ const onClearData = () => {
   }
 };
 
+export const handleEventClick = () => {
+  window.addEventListener('click', (e) => {
+    const fcPluginFrame = getFCPluginFrame();
+    const dataOpen = fcPluginFrame?.getAttribute('data-open');
+    if (dataOpen === 'true') {
+      toggleBtnPlugin();
+    }
+  });
+};
+
 export const handleMessage = () => {
   window.addEventListener('message', (e) => {
     if (
@@ -266,21 +276,27 @@ export const appendTwitterCastElement = () => {
 
 export const handleTWChangeUrl = (url) => {
   const fcPluginFrame = getFCPluginFrame();
+  const dataOpen = fcPluginFrame?.getAttribute('data-open');
   if (fcPluginFrame) {
     if (url?.includes('https://twitter.com')) {
       const twSidebar = document.querySelector(
         'div[data-testid="sidebarColumn"]'
       );
-      const dataOpen = fcPluginFrame?.getAttribute('data-open');
       if (twSidebar) {
         if (dataOpen) {
           twSidebar.style.display = 'none';
         }
       }
     }
+    if (dataOpen === 'true') {
+      toggleBtnPlugin();
+    }
     fcPluginFrame?.contentWindow?.postMessage?.(
-      { type: 'b-fc-update-tw-url', payload: url },
+      { type: 'b-fc-update-tw-url', payload: { url, title: document.title } },
       '*'
+    );
+    window.dispatchEvent(
+      new CustomEvent('b-fc-update-tw-url', { detail: url })
     );
   }
 };
@@ -358,8 +374,11 @@ export const injectFCPlugin = (params) => {
   const div = document.createElement('div');
   div.id = 'buidler-fc-plugin';
   document.body.appendChild(div);
+  div.addEventListener('click', (e) => {
+    e.stopPropagation();
+  });
   const element = ReactDOM.createRoot(div);
-  element.render(<FCPlugin signerId={params?.signerId} open={params?.open} />);
+  element.render(<FCPlugin signerId={params?.signerId} />);
 };
 
 export const toggleBtnPlugin = () => {
@@ -371,4 +390,12 @@ export const toggleBtnPlugin = () => {
       element?.click?.();
     }
   }
+};
+
+export const getCountByUrls = (urls) => {
+  const params = new URLSearchParams();
+  urls.forEach((url) => {
+    params.append('urls[]', url);
+  });
+  return fetch(`https://prod.api.buidler.app/xcaster/counter/casts?${params}`);
 };

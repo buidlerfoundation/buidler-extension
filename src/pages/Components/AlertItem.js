@@ -34,10 +34,10 @@ const AlertItem = ({ url, id }) => {
       <a className="alert-url" href={url} target="_blank" rel="noreferrer">
         {url}
       </a>
-      <div className="normal-button alert-action" onClick={openCast}>
+      <div className="b-fc-normal-button alert-action" onClick={openCast}>
         <span>Open cast</span>
       </div>
-      <div className="normal-button alert-close" onClick={onClose}>
+      <div className="b-fc-normal-button alert-close" onClick={onClose}>
         <IconClose />
       </div>
     </div>

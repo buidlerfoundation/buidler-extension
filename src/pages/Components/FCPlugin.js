@@ -1,18 +1,32 @@
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import React, {
+  useState,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react';
 import IconJumpIn from './SVG/IconJumpIn';
-import LogoFC from './SVG/LogoFC';
-import { twTheme } from '../../utils';
-import IconMenuMini from './SVG/IconMenuMini';
-import IconMenuClose from './SVG/IconMenuClose';
+import { getCountByUrls, twTheme } from '../../utils';
 import Spinner from './Spinner';
+import IconBuidlerLogo from './SVG/IconBuidlerLogo';
+import IconMenuToggle from './SVG/IconMenuToggle';
+import IconMenuPlus from './SVG/IconMenuPlus';
+import IconMenuClose from './SVG/IconMenuClose';
+import numeral from 'numeral';
 
 const FCPlugin = ({ signerId, open }) => {
   const [openPlugin, setOpenPlugin] = useState(open === 'true');
+  const [alertCastCount, setAlertCastCount] = useState(false);
+  const iframeRef = useRef();
   const [openMenu, setOpenMenu] = useState(false);
-  const [isMinimized, setMinimized] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [dataSignerId, setDataSignerId] = useState('');
   const initialTheme = useMemo(() => twTheme(), []);
+  const [castCount, setCastCount] = useState(0);
+  const castBadgeDisplay = useMemo(
+    () => numeral(castCount).format('0[.][0]a'),
+    [castCount]
+  );
   const showMenu = useCallback(() => setOpenMenu(true), []);
   const hideMenu = useCallback(() => setOpenMenu(false), []);
   const togglePlugin = useCallback(
@@ -39,6 +53,36 @@ const FCPlugin = ({ signerId, open }) => {
       }
     }
   }, [openPlugin]);
+  const getCastCount = useCallback((url, firstLoad) => {
+    getCountByUrls([url]).then((res) =>
+      res.json().then((data) => {
+        if (data.success) {
+          try {
+            const value = Object.values(data.data)?.[0] || 0;
+            setCastCount(value);
+            if (value > 0 && firstLoad) {
+              setAlertCastCount(true);
+              setTimeout(() => {
+                setAlertCastCount(false);
+              }, 5000);
+            }
+          } catch (error) {}
+        }
+      })
+    );
+  }, []);
+  useEffect(() => {
+    getCastCount(window.location.href, true);
+  }, [getCastCount]);
+  useEffect(() => {
+    const event = (e) => {
+      getCastCount(e.detail);
+    };
+    window.addEventListener('b-fc-update-tw-url', event);
+    return () => {
+      window.removeEventListener('b-fc-update-tw-url', event);
+    };
+  }, [getCastCount]);
   useEffect(() => {
     const messageListener = (e) => {
       if (e?.data?.type === 'b-fc-plugin-close') {
@@ -58,10 +102,22 @@ const FCPlugin = ({ signerId, open }) => {
     };
   }, [togglePlugin]);
   const onLoadIframe = useCallback(() => {
+    iframeRef.current?.contentWindow?.postMessage?.(
+      {
+        type: 'b-fc-initial-data',
+        payload: {
+          signerId: signerId || '',
+          q: initialUrl,
+          theme: initialTheme,
+          title: document.title,
+        },
+      },
+      '*'
+    );
     setTimeout(() => {
       setLoaded(true);
     }, 500);
-  }, []);
+  }, [initialTheme, initialUrl, signerId]);
   const onCancelClick = useCallback((e) => {
     e.stopPropagation();
     const element = document.getElementById('fc-plugin-confirm-modal');
@@ -72,18 +128,11 @@ const FCPlugin = ({ signerId, open }) => {
   const preventParentClick = useCallback((e) => {
     e.stopPropagation();
   }, []);
-  const onMinimizeClick = useCallback(
-    (e) => {
-      e.stopPropagation();
-      setMinimized(true);
-      hideMenu();
-    },
-    [hideMenu]
-  );
   const onCloseClick = useCallback(
     (e) => {
       e.stopPropagation();
       hideMenu();
+      setOpenPlugin(false);
       const element = document.getElementById('btn-fc-plugin');
       if (element) {
         element.style.display = 'none';
@@ -91,10 +140,20 @@ const FCPlugin = ({ signerId, open }) => {
     },
     [hideMenu]
   );
+  const onCreateClick = useCallback((e) => {
+    e.stopPropagation();
+    setOpenPlugin(true);
+    iframeRef.current?.contentWindow?.postMessage?.(
+      {
+        type: 'b-fc-new-cast',
+      },
+      '*'
+    );
+  }, []);
   return (
     <>
       <div
-        className="buidler-theme b-fc-open-plugin-container normal-button"
+        className="buidler-theme b-fc-open-plugin-container b-fc-normal-button"
         id="btn-fc-plugin"
         onClick={togglePlugin}
       >
@@ -103,33 +162,49 @@ const FCPlugin = ({ signerId, open }) => {
           onMouseEnter={showMenu}
           onMouseLeave={hideMenu}
         >
-          <div
-            className="btn-toggle"
-            style={isMinimized ? { opacity: 0.7 } : {}}
-          >
-            {!isMinimized && (
-              <>
-                <IconJumpIn />
-                <span className="b-fc-label">Open Farcaster</span>
-              </>
-            )}
-            <LogoFC />
-          </div>
-          {openMenu && (
-            <div className="plugin-menu">
-              <div
-                className="menu-item"
-                style={{ display: isMinimized ? 'none' : 'flex' }}
-                onClick={onMinimizeClick}
-              >
-                <IconMenuMini />
-                <span style={{ marginLeft: 15 }}>Minimize</span>
+          {(openMenu || openPlugin) && (
+            <div
+              className={`plugin-menu ${openPlugin ? 'plugin-menu-open' : ''}`}
+            >
+              <div className="b-menu-item">
+                <IconMenuToggle
+                  style={
+                    openPlugin ? { transform: 'rotate(180deg)' } : undefined
+                  }
+                />
+                <div className="menu-description">
+                  {openPlugin ? 'Minimize' : 'Open'}
+                </div>
               </div>
-              <div className="menu-item" onClick={onCloseClick}>
+              <div className="b-menu-item" onClick={onCreateClick}>
+                <IconMenuPlus />
+                <div className="menu-description">New post</div>
+              </div>
+              <div className="b-menu-item" onClick={onCloseClick}>
                 <IconMenuClose />
-                <span style={{ marginLeft: 15 }}>Close</span>
+                <div className="menu-description">Close</div>
               </div>
             </div>
+          )}
+          <div
+            className={`btn-toggle ${
+              castCount > 0 && alertCastCount && !openPlugin
+                ? 'alert-active'
+                : ''
+            }`}
+            style={{
+              marginLeft:
+                castCount > 0 && !openPlugin && !alertCastCount ? 10 : 0,
+            }}
+          >
+            <div className="content-cast-count">
+              <IconJumpIn />
+              <span className="b-fc-label">Show {castCount} posts</span>
+            </div>
+            <IconBuidlerLogo />
+          </div>
+          {castCount > 0 && !alertCastCount && !openPlugin && (
+            <div className="cast-badge">{castBadgeDisplay}</div>
           )}
         </div>
       </div>
@@ -140,6 +215,7 @@ const FCPlugin = ({ signerId, open }) => {
       >
         <div style={{ position: 'relative', width: '100%', height: '100%' }}>
           <iframe
+            ref={iframeRef}
             style={{
               width: '100%',
               height: '100%',
@@ -149,11 +225,7 @@ const FCPlugin = ({ signerId, open }) => {
               opacity: loaded ? 1 : 0,
             }}
             title="b-fc-plugin"
-            src={`https://buidler.app/plugin-fc?${new URLSearchParams({
-              theme: initialTheme,
-              signer_id: signerId || '',
-              q: initialUrl,
-            })}`}
+            src="https://beta.buidler.app/plugin-fc"
             id="fc-plugin-frame"
             onLoad={onLoadIframe}
             data-signer-id={dataSignerId}

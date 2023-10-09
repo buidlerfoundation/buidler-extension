@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import IconLogoFC from './SVG/IconLogoFC';
 import IconCastCount from './SVG/IconCastCount';
+import { getCountByUrls } from '../../utils';
 
 const TwitterAction = ({ twCastElement, article, index }) => {
   const [count, setCount] = useState(0);
@@ -35,11 +36,7 @@ const TwitterAction = ({ twCastElement, article, index }) => {
   }, [isConversation, tweetUrl]);
   useEffect(() => {
     if (url && !willNotGetCount) {
-      fetch(
-        `https://prod.api.buidler.app/xcaster/counter/casts?${new URLSearchParams(
-          { 'urls[]': url }
-        )}`
-      ).then((res) =>
+      getCountByUrls([url]).then((res) =>
         res.json().then((data) => {
           if (data.success) {
             try {
