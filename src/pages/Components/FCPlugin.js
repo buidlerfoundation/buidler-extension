@@ -225,7 +225,7 @@ const FCPlugin = ({ signerId, open }) => {
               opacity: loaded ? 1 : 0,
             }}
             title="b-fc-plugin"
-            src="https://beta.buidler.app/plugin-fc"
+            src="https://buidler.app/plugin-fc"
             id="fc-plugin-frame"
             onLoad={onLoadIframe}
             data-signer-id={dataSignerId}
