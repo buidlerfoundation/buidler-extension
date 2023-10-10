@@ -30,12 +30,12 @@ const AlertItem = ({ url, id }) => {
       onMouseEnter={removeTimeout}
       onMouseLeave={hideAlertDelay}
     >
-      <span className="alert-title">Your cast has been posted.</span>
+      <span className="alert-title">your post has been published.</span>
       <a className="alert-url" href={url} target="_blank" rel="noreferrer">
         {url}
       </a>
       <div className="b-fc-normal-button alert-action" onClick={openCast}>
-        <span>Open cast</span>
+        <span>Open post</span>
       </div>
       <div className="b-fc-normal-button alert-close" onClick={onClose}>
         <IconClose />

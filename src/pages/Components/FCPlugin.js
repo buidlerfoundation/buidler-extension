@@ -6,21 +6,25 @@ import React, {
   useRef,
 } from 'react';
 import IconJumpIn from './SVG/IconJumpIn';
-import { getCountByUrls, twTheme } from '../../utils';
+import { getCountByUrls, toggleModalCompose, twTheme } from '../../utils';
 import Spinner from './Spinner';
 import IconBuidlerLogo from './SVG/IconBuidlerLogo';
 import IconMenuToggle from './SVG/IconMenuToggle';
 import IconMenuPlus from './SVG/IconMenuPlus';
 import IconMenuClose from './SVG/IconMenuClose';
 import numeral from 'numeral';
+import ModalCompose from './ModalCompose';
+import { getMetadata } from '../Content/htmlParser';
 
 const FCPlugin = ({ signerId, open }) => {
   const [openPlugin, setOpenPlugin] = useState(open === 'true');
   const [alertCastCount, setAlertCastCount] = useState(false);
   const iframeRef = useRef();
   const [openMenu, setOpenMenu] = useState(false);
+  const [openComposeAfterLogin, setOpenComposeAfterLogin] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [dataSignerId, setDataSignerId] = useState('');
+  const [user, setUser] = useState(null);
   const initialTheme = useMemo(() => twTheme(), []);
   const [castCount, setCastCount] = useState(0);
   const castBadgeDisplay = useMemo(
@@ -38,6 +42,19 @@ const FCPlugin = ({ signerId, open }) => {
     []
   );
   const initialUrl = useMemo(() => window.location.href, []);
+  useEffect(() => {
+    if (dataSignerId) {
+      fetch('https://prod.api.buidler.app/xcaster/users/me', {
+        headers: { 'Signer-Id': dataSignerId },
+      }).then((res) => {
+        res.json().then((data) => {
+          if (data.success) {
+            setUser(data.data);
+          }
+        });
+      });
+    }
+  }, [dataSignerId]);
   useEffect(() => {
     chrome.storage.local.set({ Buidler_open_plugin: `${openPlugin}` });
   }, [isTwitter, openPlugin]);
@@ -83,6 +100,23 @@ const FCPlugin = ({ signerId, open }) => {
       window.removeEventListener('b-fc-update-tw-url', event);
     };
   }, [getCastCount]);
+  const onCreateClick = useCallback(
+    (e) => {
+      e?.stopPropagation?.();
+      if (user) {
+        toggleModalCompose();
+      } else {
+        setOpenComposeAfterLogin(true);
+        iframeRef.current?.contentWindow?.postMessage?.(
+          {
+            type: 'b-fc-open-login',
+          },
+          '*'
+        );
+      }
+    },
+    [user]
+  );
   useEffect(() => {
     const messageListener = (e) => {
       if (e?.data?.type === 'b-fc-plugin-close') {
@@ -94,14 +128,22 @@ const FCPlugin = ({ signerId, open }) => {
         if (quickCast) {
           quickCast.style.display = 'block';
         }
+        if (openComposeAfterLogin) {
+          setOpenComposeAfterLogin(false);
+          toggleModalCompose();
+        }
+      }
+      if (e?.data?.type === 'b-fc-plugin-open-compose') {
+        onCreateClick();
       }
     };
     window.addEventListener('message', messageListener);
     return () => {
       window.removeEventListener('message', messageListener);
     };
-  }, [togglePlugin]);
+  }, [onCreateClick, openComposeAfterLogin, togglePlugin]);
   const onLoadIframe = useCallback(() => {
+    const metadata = getMetadata();
     iframeRef.current?.contentWindow?.postMessage?.(
       {
         type: 'b-fc-initial-data',
@@ -109,7 +151,7 @@ const FCPlugin = ({ signerId, open }) => {
           signerId: signerId || '',
           q: initialUrl,
           theme: initialTheme,
-          title: document.title,
+          ...metadata,
         },
       },
       '*'
@@ -140,16 +182,6 @@ const FCPlugin = ({ signerId, open }) => {
     },
     [hideMenu]
   );
-  const onCreateClick = useCallback((e) => {
-    e.stopPropagation();
-    setOpenPlugin(true);
-    iframeRef.current?.contentWindow?.postMessage?.(
-      {
-        type: 'b-fc-new-cast',
-      },
-      '*'
-    );
-  }, []);
   return (
     <>
       <div
@@ -256,6 +288,7 @@ const FCPlugin = ({ signerId, open }) => {
           </div>
         </div>
       </div>
+      {user && <ModalCompose user={user} />}
     </>
   );
 };

@@ -5,6 +5,7 @@ import TwitterQuickCast from '../pages/Components/TwitterQuickCast';
 import FCPlugin from '../pages/Components/FCPlugin';
 import AlertItem from '../pages/Components/AlertItem';
 import TwitterAction from '../pages/Components/TwitterAction';
+import { getMetadata } from '../pages/Content/htmlParser';
 
 let lastVerticalPosition = 'bottom';
 let lastHorizontalPosition = 'right';
@@ -278,6 +279,7 @@ export const handleTWChangeUrl = (url) => {
   const fcPluginFrame = getFCPluginFrame();
   const dataOpen = fcPluginFrame?.getAttribute('data-open');
   if (fcPluginFrame) {
+    const metadata = getMetadata();
     if (url?.includes('https://twitter.com')) {
       const twSidebar = document.querySelector(
         'div[data-testid="sidebarColumn"]'
@@ -292,7 +294,7 @@ export const handleTWChangeUrl = (url) => {
       toggleBtnPlugin();
     }
     fcPluginFrame?.contentWindow?.postMessage?.(
-      { type: 'b-fc-update-tw-url', payload: { url, title: document.title } },
+      { type: 'b-fc-update-tw-url', payload: { url, ...metadata } },
       '*'
     );
     window.dispatchEvent(
@@ -398,4 +400,13 @@ export const getCountByUrls = (urls) => {
     params.append('urls[]', url);
   });
   return fetch(`https://prod.api.buidler.app/xcaster/counter/casts?${params}`);
+};
+
+export const toggleModalCompose = () => {
+  const modalCompose = document.getElementById('fc-plugin-modal-compose');
+  if (modalCompose.style.display === 'none') {
+    modalCompose.style.display = 'block';
+  } else {
+    modalCompose.style.display = 'none';
+  }
 };
