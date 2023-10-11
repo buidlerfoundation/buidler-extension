@@ -255,6 +255,7 @@ const FCPlugin = ({ signerId, open }) => {
               backgroundColor: 'var(--color-background-1)',
               colorScheme: 'auto',
               opacity: loaded ? 1 : 0,
+              margin: 0,
             }}
             title="b-fc-plugin"
             src="https://buidler.app/plugin-fc"
