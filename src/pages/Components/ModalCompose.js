@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import ContentEditable from 'react-contenteditable';
 import { getFCPluginFrame } from '../../utils';
+import IconEmbed from './SVG/IconEmbed';
 
 const ModalCompose = ({ user }) => {
   const [value, setValue] = useState('');
@@ -45,6 +46,7 @@ const ModalCompose = ({ user }) => {
                 height: 25,
                 borderRadius: '50%',
                 marginRight: 15,
+                backgroundColor: 'var(--color-background-3)',
               }}
             />
           )}
@@ -69,6 +71,21 @@ const ModalCompose = ({ user }) => {
             onChange={onChange}
             className="compose-input"
           />
+        </div>
+        <div className="compose-embed">
+          <IconEmbed />
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              marginLeft: 20,
+              flex: 1,
+            }}
+            className="truncate-flex"
+          >
+            <span className="embed-title truncate">{document.title}</span>
+            <span className="embed-url truncate">{window.location.href}</span>
+          </div>
         </div>
         <div className="modal-actions">
           <div className="btn-cancel" onClick={onCancelClick}>

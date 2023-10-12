@@ -6,7 +6,12 @@ import React, {
   useRef,
 } from 'react';
 import IconJumpIn from './SVG/IconJumpIn';
-import { getCountByUrls, toggleModalCompose, twTheme } from '../../utils';
+import {
+  getCountByUrls,
+  toggleModalCompose,
+  toggleModalReply,
+  twTheme,
+} from '../../utils';
 import Spinner from './Spinner';
 import IconBuidlerLogo from './SVG/IconBuidlerLogo';
 import IconMenuToggle from './SVG/IconMenuToggle';
@@ -15,6 +20,7 @@ import IconMenuClose from './SVG/IconMenuClose';
 import numeral from 'numeral';
 import ModalCompose from './ModalCompose';
 import { getMetadata } from '../Content/htmlParser';
+import ModalReply from './ModalReply';
 
 const FCPlugin = ({ signerId, open }) => {
   const [openPlugin, setOpenPlugin] = useState(open === 'true');
@@ -27,6 +33,7 @@ const FCPlugin = ({ signerId, open }) => {
   const [user, setUser] = useState(null);
   const initialTheme = useMemo(() => twTheme(), []);
   const [castCount, setCastCount] = useState(0);
+  const [parentCast, setParentCast] = useState(null);
   const castBadgeDisplay = useMemo(
     () => numeral(castCount).format('0[.][0]a'),
     [castCount]
@@ -117,6 +124,19 @@ const FCPlugin = ({ signerId, open }) => {
     },
     [user]
   );
+  const onOpenReply = useCallback((payload) => {
+    setParentCast(payload);
+    toggleModalReply();
+  }, []);
+  const onCloseReply = useCallback(() => {
+    setParentCast(null);
+    iframeRef.current?.contentWindow?.postMessage?.(
+      {
+        type: 'b-fc-close-reply',
+      },
+      '*'
+    );
+  }, []);
   useEffect(() => {
     const messageListener = (e) => {
       if (e?.data?.type === 'b-fc-plugin-close') {
@@ -136,12 +156,15 @@ const FCPlugin = ({ signerId, open }) => {
       if (e?.data?.type === 'b-fc-plugin-open-compose') {
         onCreateClick();
       }
+      if (e?.data?.type === 'b-fc-plugin-open-reply') {
+        onOpenReply(e?.data?.payload);
+      }
     };
     window.addEventListener('message', messageListener);
     return () => {
       window.removeEventListener('message', messageListener);
     };
-  }, [onCreateClick, openComposeAfterLogin, togglePlugin]);
+  }, [onCreateClick, onOpenReply, openComposeAfterLogin, togglePlugin]);
   const onLoadIframe = useCallback(() => {
     const metadata = getMetadata();
     iframeRef.current?.contentWindow?.postMessage?.(
@@ -258,7 +281,7 @@ const FCPlugin = ({ signerId, open }) => {
               margin: 0,
             }}
             title="b-fc-plugin"
-            src="https://buidler.app/plugin-fc"
+            src="https://beta.buidler.app/plugin-fc"
             id="fc-plugin-frame"
             onLoad={onLoadIframe}
             data-signer-id={dataSignerId}
@@ -290,6 +313,9 @@ const FCPlugin = ({ signerId, open }) => {
         </div>
       </div>
       {user && <ModalCompose user={user} />}
+      {user && (
+        <ModalReply user={user} cast={parentCast} onClose={onCloseReply} />
+      )}
     </>
   );
 };

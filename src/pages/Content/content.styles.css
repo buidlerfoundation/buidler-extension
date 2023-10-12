@@ -30,6 +30,16 @@ html {
   font-style: normal;
 }
 
+.truncate-flex {
+  min-width: 0;
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .b-fc-normal-button:hover {
   cursor: pointer;
 }
@@ -594,7 +604,31 @@ body.dim .buidler-theme {
   word-break: break-word;
   overflow-y: auto;
   max-height: 250px;
-  min-height: 100px;
+}
+
+.b-fc-modal-compose .compose-embed {
+  display: flex;
+  align-items: center;
+  border-radius: 10px;
+  margin-top: 20px;
+  border: 1px solid var(--color-stroke);
+  height: 65px;
+  padding: 0 15px;
+}
+
+.b-fc-modal-compose .compose-embed .embed-title {
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--color-primary-text);
+  line-height: 22px;
+}
+
+.b-fc-modal-compose .compose-embed .embed-url {
+  color: #0584fe;
+  margin-top: 2px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 19px;
 }
 
 .b-fc-modal-compose .compose-placeholder {
@@ -643,4 +677,9 @@ body.dim .buidler-theme {
   font-size: 13px;
   line-height: 16px;
   color: #c848ff;
+}
+
+.mention-string {
+  color: #0584fe;
+  text-decoration: none;
 }
