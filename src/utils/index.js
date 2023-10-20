@@ -204,6 +204,8 @@ export const appendTwitterQuickCastExpand = () => {
   if (!dialog) return;
   const toolBar = dialog.querySelector('div[data-testid="toolBar"]');
   if (!toolBar) return;
+  const inlineButton = toolBar.querySelector('div[data-testid="tweetButton"]');
+  if (inlineButton && inlineButton.innerText === 'Reply') return;
   const div = document.createElement('div');
   div.id = 'buidler-tweet-quick-cast-expand';
   const fcPluginFrame = getFCPluginFrame();

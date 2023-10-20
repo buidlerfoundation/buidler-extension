@@ -20,6 +20,7 @@ const TwitterAction = ({ twCastElement, article, index }) => {
     () =>
       index === 0 &&
       window.location.pathname.includes('/status/') &&
+      tweetUrl &&
       tweetUrl.includes(window.location.pathname),
     [index, tweetUrl]
   );

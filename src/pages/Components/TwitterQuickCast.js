@@ -3,17 +3,32 @@ import { getFCPluginFrame } from '../../utils';
 import IconFCCheck from './SVG/IconFCCheck';
 import IconFCUncheck from './SVG/IconFCUncheck';
 
-const TwitterQuickCast = ({parentElement}) => {
+const storageCheckedKey = 'Buidler_cast_checked_key';
+
+const TwitterQuickCast = ({ parentElement }) => {
   const [checked, setChecked] = useState(true);
   const toggle = useCallback((e) => {
     e.stopPropagation();
     setChecked((current) => !current);
   }, []);
+  const initialCheckedState = useCallback(async () => {
+    const storageChecked = await chrome.storage.local.get(storageCheckedKey);
+    const initialChecked = storageChecked[storageCheckedKey];
+    if (initialChecked === 'false') {
+      setChecked(false);
+    } else {
+      setChecked(true);
+    }
+  }, []);
   useEffect(() => {
-    const root = parentElement || document
-    const element = root.querySelector(
-      'div[data-testid*="tweetButton"]'
-    );
+    initialCheckedState();
+  }, [initialCheckedState]);
+  useEffect(() => {
+    chrome.storage.local.set({ [storageCheckedKey]: `${checked}` });
+  }, [checked]);
+  useEffect(() => {
+    const root = parentElement || document;
+    const element = root.querySelector('div[data-testid*="tweetButton"]');
     const clickListener = (e) => {
       const twitterTextInput = root.querySelector(
         'div[data-testid="tweetTextarea_0"]'
@@ -23,6 +38,9 @@ const TwitterQuickCast = ({parentElement}) => {
         const payload = {
           text: twitterTextInput?.innerText,
         };
+        if (window.location.pathname.includes('/status/')) {
+          payload.embeds = [{ url: window.location.href }];
+        }
         const dataOpen = fcPluginFrame?.getAttribute('data-open');
         if (dataOpen === 'false') {
           document.querySelector('#btn-fc-plugin')?.click?.();
