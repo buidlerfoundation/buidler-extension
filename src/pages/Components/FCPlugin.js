@@ -21,9 +21,11 @@ import numeral from 'numeral';
 import ModalCompose from './ModalCompose';
 import { getMetadata } from '../Content/htmlParser';
 import ModalReply from './ModalReply';
+import ModalImage from './ModalImage';
 
 const FCPlugin = ({ signerId, open }) => {
   const [openPlugin, setOpenPlugin] = useState(open === 'true');
+  const [originSrc, setOriginSrc] = useState('');
   const [alertCastCount, setAlertCastCount] = useState(false);
   const iframeRef = useRef();
   const [openMenu, setOpenMenu] = useState(false);
@@ -158,6 +160,13 @@ const FCPlugin = ({ signerId, open }) => {
       }
       if (e?.data?.type === 'b-fc-plugin-open-reply') {
         onOpenReply(e?.data?.payload);
+      }
+      if (e?.data?.type === 'b-fc-plugin-open-image-fullscreen') {
+        setOriginSrc(e?.data?.payload);
+        const element = document.getElementById('fc-plugin-modal-image');
+        if (element) {
+          element.style.display = 'flex';
+        }
       }
     };
     window.addEventListener('message', messageListener);
@@ -316,6 +325,7 @@ const FCPlugin = ({ signerId, open }) => {
       {user && (
         <ModalReply user={user} cast={parentCast} onClose={onCloseReply} />
       )}
+      <ModalImage src={originSrc} />
     </>
   );
 };

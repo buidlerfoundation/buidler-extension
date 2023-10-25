@@ -30,7 +30,7 @@ const AlertItem = ({ url, id }) => {
       onMouseEnter={removeTimeout}
       onMouseLeave={hideAlertDelay}
     >
-      <span className="alert-title">your post has been published.</span>
+      <span className="alert-title">Your post has been published.</span>
       <a className="alert-url" href={url} target="_blank" rel="noreferrer">
         {url}
       </a>

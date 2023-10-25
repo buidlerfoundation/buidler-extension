@@ -1,6 +1,6 @@
 import React from 'react';
 
-const IconClose = () => {
+const IconClose = ({ style }) => {
   return (
     <svg
       width="15"
@@ -8,6 +8,7 @@ const IconClose = () => {
       viewBox="0 0 15 16"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      style={style}
     >
       <path
         fill-rule="evenodd"
