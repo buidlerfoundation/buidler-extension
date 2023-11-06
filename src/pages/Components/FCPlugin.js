@@ -11,6 +11,7 @@ import {
   toggleModalCompose,
   toggleModalReply,
   twTheme,
+  updateMetadata,
 } from '../../utils';
 import Spinner from './Spinner';
 import IconBuidlerLogo from './SVG/IconBuidlerLogo';
@@ -176,6 +177,7 @@ const FCPlugin = ({ signerId, open }) => {
   }, [onCreateClick, onOpenReply, openComposeAfterLogin, togglePlugin]);
   const onLoadIframe = useCallback(() => {
     const metadata = getMetadata();
+    updateMetadata({ metadata, url: window.location.href });
     iframeRef.current?.contentWindow?.postMessage?.(
       {
         type: 'b-fc-initial-data',

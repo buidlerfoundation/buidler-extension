@@ -46,8 +46,9 @@ const TwitterCast = ({ article, index }) => {
         embeds: [{ url: `${window.location.origin}${url}` }],
       };
       if (!value.trim()) {
-        payload.mentions = [20386];
-        payload.mentions_positions = [twUrl.length + 11];
+        const encoder = new TextEncoder();
+        payload.mentions = [20108];
+        payload.mentions_positions = [encoder.encode(text).length];
       }
       const element = document.getElementById('fc-plugin-confirm-modal');
       const btnCast = document.getElementById('b-fc-btn-cast');
@@ -73,7 +74,7 @@ const TwitterCast = ({ article, index }) => {
       onClick={preventParentClick}
     >
       {!value && (
-        <span className="placeholder">Start typing a new cast here...</span>
+        <span className="placeholder">What's on your mind</span>
       )}
       <ContentEditable
         html={value}

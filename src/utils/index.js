@@ -404,6 +404,16 @@ export const getCountByUrls = (urls) => {
   return fetch(`https://prod.api.buidler.app/xcaster/counter/casts?${params}`);
 };
 
+export const updateMetadata = (payload) => {
+  fetch('https://prod.api.buidler.app/metadata/url', {
+    method: 'post',
+    body: JSON.stringify(payload),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+};
+
 export const toggleModalCompose = () => {
   const modalCompose = document.getElementById('fc-plugin-modal-compose');
   if (modalCompose.style.display === 'none') {
@@ -451,22 +461,30 @@ export const normalizeContentUrl = (string) => {
 
 export const normalizeContentCast = (cast) => {
   let res = cast.text;
+  const encoder = new TextEncoder();
+  const decoder = new TextDecoder('utf-8');
+  const byteArray = encoder.encode(cast.text);
   if (cast.mentions_positions.length > 0) {
-    const output = [];
+    const outputByteArray = [];
     let start = 0;
     cast.mentions_positions.forEach((el, idx) => {
       if (cast.mentions?.[idx]) {
-        output.push(cast.text.slice(start, el));
-        output.push(`@${cast.mentions?.[idx]?.username}`);
+        const newByte = Array.from(
+          encoder.encode(`@${cast.mentions?.[idx]?.username}`)
+        );
+        outputByteArray.push(...Array.from(byteArray.slice(start, el)));
+        outputByteArray.push(...newByte);
         start = el;
       }
     });
-    output.push(
-      cast.text.slice(
-        cast.mentions_positions[cast.mentions_positions.length - 1]
+    outputByteArray.push(
+      ...Array.from(
+        byteArray.slice(
+          cast.mentions_positions[cast.mentions_positions.length - 1]
+        )
       )
     );
-    res = output.join('');
+    res = decoder.decode(new Uint8Array(outputByteArray));
   }
   res = res.split('\n').map(normalizeContentUrl).join('\n');
   cast.mentions.forEach((el) => {

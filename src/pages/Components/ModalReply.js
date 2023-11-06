@@ -160,7 +160,7 @@ const ModalReply = ({ cast, user, onClose }) => {
           >
             {!value && (
               <span className="compose-placeholder">
-                Start typing a new post here...
+                What's on your mind
               </span>
             )}
             <ContentEditable

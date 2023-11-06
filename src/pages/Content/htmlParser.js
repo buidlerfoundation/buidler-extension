@@ -6,6 +6,10 @@ export const getMetadata = () => {
     document.querySelector('meta[property="og:title"]')?.content ||
     document.querySelector('meta[property="twitter:title"]')?.content ||
     document.title;
+  const card =
+    document.querySelector('meta[property="twitter:card"]')?.content || null;
+  const site_name =
+    document.querySelector('meta[property="og:site_name"]')?.content || null;
   const description = document.querySelectorAll(
     'meta[property*="description"]'
   )?.[0]?.content;
@@ -15,7 +19,7 @@ export const getMetadata = () => {
   let cover =
     document.querySelector('meta[property="og:image"]')?.content ||
     document.querySelector('meta[property="twitter:image"]')?.content;
-  if (cover && !cover.includes(window.location.origin)) {
+  if (cover && !cover.includes('http')) {
     cover = `${window.location.origin}${cover}`;
   }
   return {
@@ -23,5 +27,8 @@ export const getMetadata = () => {
     description,
     icon,
     cover,
+    image: cover || null,
+    site_name,
+    card,
   };
 };
