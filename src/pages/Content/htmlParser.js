@@ -30,5 +30,6 @@ export const getMetadata = () => {
     image: cover || null,
     site_name,
     card,
+    logo: icon,
   };
 };
