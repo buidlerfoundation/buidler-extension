@@ -359,7 +359,6 @@ export const injectTwitterCast = () => {
       handleTWDialog();
       const metadata = getMetadata();
       if (
-        metadata.description &&
         metadata.icon &&
         metadata.image &&
         metadata.site_name &&
