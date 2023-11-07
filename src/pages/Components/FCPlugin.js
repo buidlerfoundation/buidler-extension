@@ -10,7 +10,6 @@ import {
   getCountByUrls,
   toggleModalCompose,
   toggleModalReply,
-  twTheme,
   updateMetadata,
 } from '../../utils';
 import Spinner from './Spinner';
@@ -34,7 +33,6 @@ const FCPlugin = ({ signerId, open }) => {
   const [loaded, setLoaded] = useState(false);
   const [dataSignerId, setDataSignerId] = useState('');
   const [user, setUser] = useState(null);
-  const initialTheme = useMemo(() => twTheme(), []);
   const [castCount, setCastCount] = useState(0);
   const [parentCast, setParentCast] = useState(null);
   const castBadgeDisplay = useMemo(
@@ -177,14 +175,12 @@ const FCPlugin = ({ signerId, open }) => {
   }, [onCreateClick, onOpenReply, openComposeAfterLogin, togglePlugin]);
   const onLoadIframe = useCallback(() => {
     const metadata = getMetadata();
-    updateMetadata({ metadata, url: window.location.href });
     iframeRef.current?.contentWindow?.postMessage?.(
       {
         type: 'b-fc-initial-data',
         payload: {
           signerId: signerId || '',
           q: initialUrl,
-          theme: initialTheme,
           ...metadata,
         },
       },
@@ -193,7 +189,7 @@ const FCPlugin = ({ signerId, open }) => {
     setTimeout(() => {
       setLoaded(true);
     }, 500);
-  }, [initialTheme, initialUrl, signerId]);
+  }, [initialUrl, signerId]);
   const onCancelClick = useCallback((e) => {
     e.stopPropagation();
     const element = document.getElementById('fc-plugin-confirm-modal');

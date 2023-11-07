@@ -9,6 +9,7 @@ import { getMetadata } from '../pages/Content/htmlParser';
 
 let lastVerticalPosition = 'bottom';
 let lastHorizontalPosition = 'right';
+let updatedMetadata = false;
 
 export let autoOffSetting = false;
 export let isAuthenticated = false;
@@ -177,6 +178,9 @@ export const handleMessage = () => {
     if (e.data.type === 'b-fc-copy-content') {
       navigator.clipboard.writeText(e.data.payload);
     }
+    if (e.data.type === 'b-fc-update-theme') {
+      document.body.className = e.data.payload;
+    }
   });
 };
 
@@ -186,15 +190,6 @@ export const getFCPluginFrame = () => {
 
 const getFCPlugin = () => {
   return document.querySelector('#buidler-fc-plugin');
-};
-
-export const twTheme = () => {
-  const bg = document.body.style.backgroundColor;
-  return bg === 'rgb(0, 0, 0)'
-    ? 'dark'
-    : bg === 'rgb(21, 32, 43)'
-    ? 'dim'
-    : 'light';
 };
 
 export const appendTwitterQuickCastExpand = () => {
@@ -278,6 +273,7 @@ export const appendTwitterCastElement = () => {
 };
 
 export const handleTWChangeUrl = (url) => {
+  updatedMetadata = false;
   const fcPluginFrame = getFCPluginFrame();
   const dataOpen = fcPluginFrame?.getAttribute('data-open');
   if (fcPluginFrame) {
@@ -305,41 +301,41 @@ export const handleTWChangeUrl = (url) => {
   }
 };
 
-const handleTWTheme = () => {
-  if (
-    document.body.style.backgroundColor === 'rgb(255, 255, 255)' &&
-    !document.body.className.includes('light')
-  ) {
-    document.body.className = 'light';
-    const fcPluginFrame = getFCPluginFrame();
-    fcPluginFrame?.contentWindow?.postMessage?.(
-      { type: 'b-fc-update-tw-theme', payload: 'light' },
-      '*'
-    );
-  }
-  if (
-    document.body.style.backgroundColor === 'rgb(21, 32, 43)' &&
-    !document.body.className.includes('dim')
-  ) {
-    document.body.className = 'dim';
-    const fcPluginFrame = getFCPluginFrame();
-    fcPluginFrame?.contentWindow?.postMessage?.(
-      { type: 'b-fc-update-tw-theme', payload: 'dim' },
-      '*'
-    );
-  }
-  if (
-    document.body.style.backgroundColor === 'rgb(0, 0, 0)' &&
-    !document.body.className.includes('dark')
-  ) {
-    document.body.className = 'dark';
-    const fcPluginFrame = getFCPluginFrame();
-    fcPluginFrame?.contentWindow?.postMessage?.(
-      { type: 'b-fc-update-tw-theme', payload: 'dark' },
-      '*'
-    );
-  }
-};
+// const handleTWTheme = () => {
+//   if (
+//     document.body.style.backgroundColor === 'rgb(255, 255, 255)' &&
+//     !document.body.className.includes('light')
+//   ) {
+//     document.body.className = 'light';
+//     const fcPluginFrame = getFCPluginFrame();
+//     fcPluginFrame?.contentWindow?.postMessage?.(
+//       { type: 'b-fc-update-tw-theme', payload: 'light' },
+//       '*'
+//     );
+//   }
+//   if (
+//     document.body.style.backgroundColor === 'rgb(21, 32, 43)' &&
+//     !document.body.className.includes('dim')
+//   ) {
+//     document.body.className = 'dim';
+//     const fcPluginFrame = getFCPluginFrame();
+//     fcPluginFrame?.contentWindow?.postMessage?.(
+//       { type: 'b-fc-update-tw-theme', payload: 'dim' },
+//       '*'
+//     );
+//   }
+//   if (
+//     document.body.style.backgroundColor === 'rgb(0, 0, 0)' &&
+//     !document.body.className.includes('dark')
+//   ) {
+//     document.body.className = 'dark';
+//     const fcPluginFrame = getFCPluginFrame();
+//     fcPluginFrame?.contentWindow?.postMessage?.(
+//       { type: 'b-fc-update-tw-theme', payload: 'dark' },
+//       '*'
+//     );
+//   }
+// };
 
 const handleTWDialog = () => {
   const fcPlugin = getFCPlugin();
@@ -360,8 +356,22 @@ export const injectTwitterCast = () => {
       appendTwitterQuickCast();
       appendTwitterQuickCastExpand();
       appendTwitterCastElement();
-      handleTWTheme();
       handleTWDialog();
+      const metadata = getMetadata();
+      if (
+        metadata.description &&
+        metadata.icon &&
+        metadata.image &&
+        metadata.site_name &&
+        metadata.title &&
+        !updatedMetadata
+      ) {
+        updateMetadata({
+          metadata: { ...metadata, title: document.title },
+          url: window.location.href,
+        });
+        updatedMetadata = true;
+      }
     }
     document.documentElement.removeEventListener(
       'DOMSubtreeModified',
@@ -371,6 +381,15 @@ export const injectTwitterCast = () => {
       'DOMSubtreeModified',
       onHTMLChange
     );
+  } else {
+    if (!updatedMetadata) {
+      const metadata = getMetadata();
+      updateMetadata({
+        metadata,
+        url: window.location.href,
+      });
+      updatedMetadata = true;
+    }
   }
 };
 

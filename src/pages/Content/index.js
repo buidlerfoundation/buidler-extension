@@ -5,7 +5,9 @@ import {
   handleTWChangeUrl,
   toggleBtnPlugin,
   handleEventClick,
+  updateMetadata,
 } from '../../utils';
+import { getMetadata } from './htmlParser';
 
 document.documentElement.setAttribute('buidler-extension', true);
 
