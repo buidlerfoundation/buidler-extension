@@ -232,6 +232,15 @@ export const appendTwitterQuickCast = () => {
   element.render(<TwitterQuickCast />);
 };
 
+export const twTheme = () => {
+  const bg = document.body.style.backgroundColor;
+  return bg === 'rgb(0, 0, 0)'
+    ? 'dark'
+    : bg === 'rgb(21, 32, 43)'
+    ? 'dim'
+    : 'light';
+};
+
 export const appendTwitterCastElement = () => {
   const articles = document.querySelectorAll('article');
   articles.forEach((article, idx) => {
@@ -251,7 +260,9 @@ export const appendTwitterCastElement = () => {
           node?.appendChild(div);
         }
         const element = ReactDOM.createRoot(div);
-        element.render(<TwitterCast article={article} index={idx} />);
+        element.render(
+          <TwitterCast article={article} index={idx} theme={twTheme()} />
+        );
         const actionElementGroup = article.querySelector('div[role="group"]');
         if (actionElementGroup) {
           const actionDiv = document.createElement('div');
@@ -422,6 +433,10 @@ export const getCountByUrls = (urls) => {
   return fetch(`https://prod.api.buidler.app/xcaster/counter/casts?${params}`);
 };
 
+export const getUsersByName = (name) => {
+  return fetch(`https://prod.api.buidler.app/users?username=${name}&limit=20`);
+};
+
 export const updateMetadata = (payload) => {
   fetch('https://prod.api.buidler.app/metadata/url', {
     method: 'post',
@@ -513,4 +528,22 @@ export const normalizeContentCast = (cast) => {
     );
   });
   return res;
+};
+
+export const extractContent = (s) => {
+  const span = document.createElement('span');
+  span.innerHTML = s
+    .replace(/<div>(.*?)<\/div>/gim, '<br>$1')
+    .replace(/<br>/gim, '\n');
+  return span.textContent || span.innerText;
+};
+
+export const getLastIndexOfMention = (s) => {
+  const mentionRegex =
+    /(<a class="mention-string" data-fid=".*?">)(.*?)(<\/a>)/g;
+  const mentionMatches = s.match(mentionRegex) || [];
+  if (mentionMatches?.length > 0) {
+    return s.lastIndexOf(mentionMatches[mentionMatches.length - 1]);
+  }
+  return -1;
 };

@@ -6,7 +6,7 @@ import IconFCUncheck from './SVG/IconFCUncheck';
 const storageCheckedKey = 'Buidler_cast_checked_key';
 
 const TwitterQuickCast = ({ parentElement }) => {
-  const [checked, setChecked] = useState(true);
+  const [checked, setChecked] = useState(false);
   const toggle = useCallback((e) => {
     e.stopPropagation();
     setChecked((current) => !current);
@@ -14,10 +14,10 @@ const TwitterQuickCast = ({ parentElement }) => {
   const initialCheckedState = useCallback(async () => {
     const storageChecked = await chrome.storage.local.get(storageCheckedKey);
     const initialChecked = storageChecked[storageCheckedKey];
-    if (initialChecked === 'false') {
-      setChecked(false);
-    } else {
+    if (initialChecked === 'true') {
       setChecked(true);
+    } else {
+      setChecked(false);
     }
   }, []);
   useEffect(() => {

@@ -1,6 +1,6 @@
 {
   "name": "buidler-extension",
-  "version": "1.0.34",
+  "version": "1.0.35",
   "description": "A social annotation built on top of Farcaster, enabling users to discuss any web content.",
   "license": "MIT",
   "repository": {

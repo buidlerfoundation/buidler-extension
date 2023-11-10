@@ -1,8 +1,8 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import ContentEditable from 'react-contenteditable';
 import { getFCPluginFrame } from '../../utils';
+import MentionPicker from './MentionPicker';
 
-const TwitterCast = ({ article, index }) => {
+const TwitterCast = ({ article, index, theme }) => {
   const [value, setValue] = useState('');
   const preventParentClick = useCallback((e) => {
     e.stopPropagation();
@@ -49,6 +49,7 @@ const TwitterCast = ({ article, index }) => {
         const encoder = new TextEncoder();
         payload.mentions = [20108];
         payload.mentions_positions = [encoder.encode(text).length];
+        payload.onlyLink = true;
       }
       const element = document.getElementById('fc-plugin-confirm-modal');
       const btnCast = document.getElementById('b-fc-btn-cast');
@@ -65,22 +66,17 @@ const TwitterCast = ({ article, index }) => {
     },
     [isConversation, tweetUrl, value]
   );
-  const onChange = useCallback((e) => {
-    setValue(e.target.value);
-  }, []);
   return (
     <div
-      className="buidler-theme buidler-tweet-cast-container"
+      className={`buidler-theme buidler-theme-${theme} buidler-tweet-cast-container`}
       onClick={preventParentClick}
     >
-      {!value && (
-        <span className="placeholder">What's on your mind</span>
-      )}
-      <ContentEditable
-        html={value}
-        onChange={onChange}
-        className="input"
-        onKeyDown={preventParentClick}
+      {!value && <span className="placeholder">What's on your mind</span>}
+      <MentionPicker
+        text={value}
+        setText={setValue}
+        inputClass="input"
+        popupStyle={{ bottom: '100%', marginTop: 0 }}
       />
       <div className="btn-cast" onClick={onCastClick}>
         <span>Cast to Farcaster</span>

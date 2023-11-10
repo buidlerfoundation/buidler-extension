@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react';
 import ContentEditable from 'react-contenteditable';
 import { getFCPluginFrame } from '../../utils';
 import IconEmbed from './SVG/IconEmbed';
+import MentionPicker from './MentionPicker';
 
 const ModalCompose = ({ user }) => {
   const [value, setValue] = useState('');
@@ -13,9 +14,6 @@ const ModalCompose = ({ user }) => {
   }, []);
   const preventParentClick = useCallback((e) => {
     e.stopPropagation();
-  }, []);
-  const onChange = useCallback((e) => {
-    setValue(e.target.value);
   }, []);
   const onPostClick = useCallback(() => {
     if (!value.trim()) return;
@@ -62,14 +60,12 @@ const ModalCompose = ({ user }) => {
           }}
         >
           {!value && (
-            <span className="compose-placeholder">
-              What's on your mind
-            </span>
+            <span className="compose-placeholder">What's on your mind</span>
           )}
-          <ContentEditable
-            html={value}
-            onChange={onChange}
-            className="compose-input"
+          <MentionPicker
+            inputClass="compose-input"
+            text={value}
+            setText={setValue}
           />
         </div>
         <div className="compose-embed">

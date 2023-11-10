@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { getFCPluginFrame, normalizeContentCast } from '../../utils';
-import ContentEditable from 'react-contenteditable';
+import MentionPicker from './MentionPicker';
 
 const ModalReply = ({ cast, user, onClose }) => {
   const [value, setValue] = useState('');
@@ -13,9 +13,6 @@ const ModalReply = ({ cast, user, onClose }) => {
   }, [onClose]);
   const preventParentClick = useCallback((e) => {
     e.stopPropagation();
-  }, []);
-  const onChange = useCallback((e) => {
-    setValue(e.target.value);
   }, []);
   const disabled = useMemo(() => !value.trim() || !cast, [cast, value]);
   const onPostClick = useCallback(() => {
@@ -159,14 +156,12 @@ const ModalReply = ({ cast, user, onClose }) => {
             }}
           >
             {!value && (
-              <span className="compose-placeholder">
-                What's on your mind
-              </span>
+              <span className="compose-placeholder">What's on your mind</span>
             )}
-            <ContentEditable
-              html={value}
-              onChange={onChange}
-              className="compose-input"
+            <MentionPicker
+              text={value}
+              setText={setValue}
+              inputClass="compose-input"
             />
           </div>
         </div>
