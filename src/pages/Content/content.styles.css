@@ -503,7 +503,7 @@ body.dim .buidler-theme, .buidler-theme-dim {
 
 .b-fc-alert-item .alert-action {
   background-color: #1159d5;
-  color: #e8e8e8;
+  color: white;
   font-size: 14px;
   line-height: 19px;
   align-self: flex-end;

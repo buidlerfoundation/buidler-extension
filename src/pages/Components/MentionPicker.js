@@ -9,6 +9,7 @@ import {
 const MentionItem = ({
   fid,
   name,
+  displayName,
   url,
   index,
   selectedMentionIndex,
@@ -24,10 +25,6 @@ const MentionItem = ({
         display: 'flex',
         alignItems: 'center',
         gap: 15,
-        fontSize: 16,
-        lineHeight: '19px',
-        fontWeight: 600,
-        color: 'var(--color-primary-text)',
         cursor: 'pointer',
         backgroundColor:
           index === selectedMentionIndex
@@ -39,10 +36,30 @@ const MentionItem = ({
     >
       <img
         alt="avatar"
-        style={{ width: 25, height: 25, borderRadius: '50%' }}
+        style={{ width: 35, height: 35, borderRadius: '50%' }}
         src={url}
       />
-      <span>{name}</span>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <span
+          style={{
+            fontSize: 15,
+            lineHeight: '19px',
+            fontWeight: 600,
+            color: 'var(--color-primary-text)',
+          }}
+        >
+          {displayName}
+        </span>
+        <span
+          style={{
+            fontSize: 14,
+            lineHeight: '17px',
+            color: 'var(--color-secondary-text)',
+          }}
+        >
+          @{name}
+        </span>
+      </div>
     </div>
   );
 };
@@ -196,6 +213,7 @@ const MentionPicker = ({
         key={item.fid}
         url={item.pfp?.url}
         name={item.username}
+        displayName={item.display_name}
         index={index}
         fid={item.fid}
         selectedMentionIndex={selectedMentionIndex}
