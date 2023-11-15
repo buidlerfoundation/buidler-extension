@@ -364,8 +364,8 @@ const handleTWDialog = () => {
 export const injectTwitterCast = () => {
   if (window.location.origin === 'https://twitter.com') {
     function onHTMLChange() {
-      appendTwitterQuickCast();
-      appendTwitterQuickCastExpand();
+      // appendTwitterQuickCast();
+      // appendTwitterQuickCastExpand();
       appendTwitterCastElement();
       handleTWDialog();
       const metadata = getMetadata();
