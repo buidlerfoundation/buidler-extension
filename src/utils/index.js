@@ -547,3 +547,12 @@ export const getLastIndexOfMention = (s) => {
   }
   return -1;
 };
+
+export const MAXIMUM_LENGTH = 320;
+
+export const getTextLength = (s) => {
+  const value = extractContent(s);
+  const encoder = new TextEncoder();
+  const byteArray = encoder.encode(value.trim());
+  return byteArray.length;
+};

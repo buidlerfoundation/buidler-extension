@@ -276,10 +276,6 @@ body.dim .buidler-theme, .buidler-theme-dim {
   margin-bottom: 5px;
 }
 
-.buidler-tweet-cast-container .btn-cast :hover {
-  cursor: pointer;
-}
-
 .checkbox {
   width: 20px;
   height: 20px;
@@ -587,7 +583,6 @@ body.dim .buidler-theme, .buidler-theme-dim {
 }
 
 .b-fc-modal-container .modal-actions .btn-main {
-  cursor: pointer;
   width: 84px;
   height: 40px;
   display: flex;
@@ -643,7 +638,7 @@ body.dim .buidler-theme, .buidler-theme-dim {
   display: flex;
   align-items: center;
   border-radius: 10px;
-  margin-top: 20px;
+  margin-top: 10px;
   border: 1px solid var(--color-stroke);
   height: 65px;
   padding: 0 15px;
@@ -717,7 +712,7 @@ body.dim .buidler-theme, .buidler-theme-dim {
   text-decoration: none;
 }
 
-.popup-mention__container {
+.ex-popup-mention__container {
   display: flex;
   flex-direction: column;
   border: 1px solid var(--color-stroke);

@@ -1,9 +1,12 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { getFCPluginFrame } from '../../utils';
+import { MAXIMUM_LENGTH, getFCPluginFrame, getTextLength } from '../../utils';
 import MentionPicker from './MentionPicker';
 
 const TwitterCast = ({ article, index, theme }) => {
   const [value, setValue] = useState('');
+  const length = useMemo(() => getTextLength(value), [value]);
+  const left = useMemo(() => MAXIMUM_LENGTH - length, [length]);
+  const disabled = useMemo(() => length > MAXIMUM_LENGTH, [length]);
   const preventParentClick = useCallback((e) => {
     e.stopPropagation();
   }, []);
@@ -27,6 +30,7 @@ const TwitterCast = ({ article, index, theme }) => {
   );
   const onCastClick = useCallback(
     (e) => {
+      if (disabled) return;
       let url = tweetUrl;
       if (isConversation) {
         url = window.location.pathname;
@@ -64,7 +68,7 @@ const TwitterCast = ({ article, index, theme }) => {
       };
       element.style.display = 'block';
     },
-    [isConversation, tweetUrl, value]
+    [disabled, isConversation, tweetUrl, value]
   );
   return (
     <div
@@ -78,7 +82,30 @@ const TwitterCast = ({ article, index, theme }) => {
         inputClass="input"
         popupStyle={{ bottom: '100%', marginTop: 0 }}
       />
-      <div className="btn-cast" onClick={onCastClick}>
+      <div
+        style={{
+          alignSelf: 'flex-end',
+          color:
+            left <= 10
+              ? left > 0
+                ? 'rgb(183, 138, 106)'
+                : 'rgb(213, 19, 56)'
+              : 'var(--color-placeholder)',
+          fontWeight: 400,
+          margin: '0px 5px 15px 5px',
+          fontSize: 13,
+        }}
+      >
+        {left <= 10 ? `${left} left` : ''}
+      </div>
+      <div
+        className="btn-cast"
+        onClick={onCastClick}
+        style={{
+          opacity: disabled ? 0.6 : 1,
+          cursor: disabled ? 'default' : 'pointer',
+        }}
+      >
         <span>Cast to Farcaster</span>
       </div>
     </div>

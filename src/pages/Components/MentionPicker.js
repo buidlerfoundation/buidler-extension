@@ -318,7 +318,7 @@ const MentionPicker = ({
         onKeyDown={(e) => e.stopPropagation()}
       />
       {!loadingDataUser && anchorPopup && (
-        <div className="popup-mention__container" style={popupStyle}>
+        <div className="ex-popup-mention__container" style={popupStyle}>
           {dataUsers.map(renderMentionItem)}
         </div>
       )}

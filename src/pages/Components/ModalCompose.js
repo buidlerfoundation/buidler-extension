@@ -1,11 +1,16 @@
-import React, { useCallback, useState } from 'react';
-import ContentEditable from 'react-contenteditable';
-import { getFCPluginFrame } from '../../utils';
+import React, { useCallback, useMemo, useState } from 'react';
+import { MAXIMUM_LENGTH, getFCPluginFrame, getTextLength } from '../../utils';
 import IconEmbed from './SVG/IconEmbed';
 import MentionPicker from './MentionPicker';
 
 const ModalCompose = ({ user }) => {
   const [value, setValue] = useState('');
+  const length = useMemo(() => getTextLength(value), [value]);
+  const left = useMemo(() => MAXIMUM_LENGTH - length, [length]);
+  const disabled = useMemo(
+    () => !value.trim() || length > MAXIMUM_LENGTH,
+    [length, value]
+  );
   const onCancelClick = useCallback(() => {
     const element = document.getElementById('fc-plugin-modal-compose');
     if (element) {
@@ -16,7 +21,7 @@ const ModalCompose = ({ user }) => {
     e.stopPropagation();
   }, []);
   const onPostClick = useCallback(() => {
-    if (!value.trim()) return;
+    if (disabled) return;
     const fcPluginFrame = getFCPluginFrame();
     const type = 'tw-cast';
     const payload = {
@@ -25,7 +30,7 @@ const ModalCompose = ({ user }) => {
     };
     fcPluginFrame?.contentWindow?.postMessage?.({ type, payload }, '*');
     onCancelClick();
-  }, [onCancelClick, value]);
+  }, [disabled, onCancelClick, value]);
   return (
     <div
       id="fc-plugin-modal-compose"
@@ -68,6 +73,23 @@ const ModalCompose = ({ user }) => {
             setText={setValue}
           />
         </div>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            color:
+              left <= 10
+                ? left > 0
+                  ? 'rgb(183, 138, 106)'
+                  : 'rgb(213, 19, 56)'
+                : 'var(--color-placeholder)',
+            fontWeight: 400,
+            marginTop: 5,
+            fontSize: 13,
+          }}
+        >
+          {left <= 10 ? `${left} left` : ''}
+        </div>
         <div className="compose-embed">
           <IconEmbed />
           <div
@@ -91,7 +113,10 @@ const ModalCompose = ({ user }) => {
             id="b-fc-btn-post"
             className="btn-main"
             onClick={onPostClick}
-            style={{ opacity: !value.trim() ? 0.6 : 1 }}
+            style={{
+              opacity: disabled ? 0.6 : 1,
+              cursor: disabled ? 'default' : 'pointer',
+            }}
           >
             Post
           </div>
