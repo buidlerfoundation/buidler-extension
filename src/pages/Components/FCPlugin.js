@@ -212,19 +212,6 @@ const FCPlugin = ({ signerId, open }) => {
     },
     [hideMenu]
   );
-  useEffect(() => {
-    const eventPaste = (e) => {
-      e.preventDefault();
-      if (!e.clipboardData.types.includes('Files')) {
-        const text = e.clipboardData.getData('text/plain');
-        document.execCommand('insertText', false, text);
-      }
-    };
-    window.addEventListener('paste', eventPaste);
-    return () => {
-      window.removeEventListener('paste', eventPaste);
-    };
-  }, []);
   return (
     <>
       <div

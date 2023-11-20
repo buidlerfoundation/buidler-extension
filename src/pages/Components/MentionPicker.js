@@ -307,6 +307,13 @@ const MentionPicker = ({
       }, 200);
     }
   }, [mentionPos.character, mentionStr]);
+  const handlePaste = useCallback((event) => {
+    event.preventDefault();
+    if (!event.clipboardData.types.includes('Files')) {
+      const text = event.clipboardData.getData('text/plain');
+      document.execCommand('insertText', false, text);
+    }
+  }, []);
   return (
     <>
       <ContentEditable
@@ -316,6 +323,7 @@ const MentionPicker = ({
         innerRef={inputRef}
         style={inputStyle}
         onKeyDown={(e) => e.stopPropagation()}
+        onPaste={handlePaste}
       />
       {!loadingDataUser && anchorPopup && (
         <div className="ex-popup-mention__container" style={popupStyle}>
