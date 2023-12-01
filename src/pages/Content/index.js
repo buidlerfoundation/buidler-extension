@@ -5,9 +5,8 @@ import {
   handleTWChangeUrl,
   toggleBtnPlugin,
   handleEventClick,
-  updateMetadata,
+  injectWarpcastInsights,
 } from '../../utils';
-import { getMetadata } from './htmlParser';
 
 document.documentElement.setAttribute('buidler-extension', true);
 
@@ -21,6 +20,7 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
     injectFCPlugin({
       signerId: msg?.signerId || search?.get('b-signer-id'),
       open: msg?.openPlugin,
+      uniqId: msg?.uniqId,
     });
   }
   if (msg?.type === 'on-frame-focus') {
@@ -29,6 +29,10 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
   if (msg?.type === 'on-tab-update') {
     injectTwitterCast();
     handleTWChangeUrl(msg?.url);
+    if (msg?.url) {
+      const path = new URL(msg?.url).pathname;
+      injectWarpcastInsights(path);
+    }
   }
   if (msg?.type === 'on-frame-update') {
     // on-frame-update
@@ -44,5 +48,6 @@ chrome.runtime.sendMessage(
 );
 
 injectTwitterCast();
+injectWarpcastInsights();
 handleMessage();
 handleEventClick();

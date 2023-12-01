@@ -1,5 +1,6 @@
+import { apiBaseUrl } from "../utils";
+
 const accessTokenKey = 'Buidler_access_token';
-const apiBaseUrl = 'https://prod.api.buidler.app/';
 
 const METHOD_GET = 'get';
 const METHOD_POST = 'post';

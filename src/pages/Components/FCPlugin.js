@@ -7,10 +7,14 @@ import React, {
 } from 'react';
 import IconJumpIn from './SVG/IconJumpIn';
 import {
+  apiBaseUrl,
+  baseUrl,
   getCountByUrls,
+  getWCUsername,
   toggleModalCompose,
   toggleModalReply,
-  updateMetadata,
+  updateColorButtonDiscussion,
+  updateColorButtonInsights,
 } from '../../utils';
 import Spinner from './Spinner';
 import IconBuidlerLogo from './SVG/IconBuidlerLogo';
@@ -22,8 +26,10 @@ import ModalCompose from './ModalCompose';
 import { getMetadata } from '../Content/htmlParser';
 import ModalReply from './ModalReply';
 import ModalImage from './ModalImage';
+import IconDiscussion from './SVG/IconDiscussion';
+import IconMenuInsights from './SVG/IconMenuInsights';
 
-const FCPlugin = ({ signerId, open }) => {
+const FCPlugin = ({ signerId, open, initialUsername, isWarpcast, uniqId }) => {
   const [openPlugin, setOpenPlugin] = useState(open === 'true');
   const [originSrc, setOriginSrc] = useState('');
   const [alertCastCount, setAlertCastCount] = useState(false);
@@ -52,7 +58,7 @@ const FCPlugin = ({ signerId, open }) => {
   const initialUrl = useMemo(() => window.location.href, []);
   useEffect(() => {
     if (dataSignerId) {
-      fetch('https://prod.api.buidler.app/xcaster/users/me', {
+      fetch(apiBaseUrl + 'users/me', {
         headers: { 'Signer-Id': dataSignerId },
       }).then((res) => {
         res.json().then((data) => {
@@ -125,6 +131,37 @@ const FCPlugin = ({ signerId, open }) => {
     },
     [user]
   );
+  const onDiscussionClick = useCallback((e) => {
+    e.stopPropagation();
+    setOpenPlugin(true);
+    iframeRef.current?.contentWindow?.postMessage?.(
+      {
+        type: 'b-fc-navigate',
+        payload: '/plugin-fc',
+      },
+      '*'
+    );
+    updateColorButtonInsights(false);
+    updateColorButtonDiscussion(true);
+  }, []);
+  const onInsightsClick = useCallback((e) => {
+    e.stopPropagation();
+    setOpenPlugin(true);
+    const username = getWCUsername();
+    let url = '/plugin-fc/insights';
+    if (username) {
+      url += `/${username}`;
+    }
+    iframeRef.current?.contentWindow?.postMessage?.(
+      {
+        type: 'b-fc-navigate',
+        payload: url,
+      },
+      '*'
+    );
+    updateColorButtonInsights(true);
+    updateColorButtonDiscussion(false);
+  }, []);
   const onOpenReply = useCallback((payload) => {
     setParentCast(payload);
     toggleModalReply();
@@ -140,6 +177,9 @@ const FCPlugin = ({ signerId, open }) => {
   }, []);
   useEffect(() => {
     const messageListener = (e) => {
+      if (e?.data?.type === 'b-fc-plugin-update-current-url') {
+        window.location.href = e?.data?.payload;
+      }
       if (e?.data?.type === 'b-fc-plugin-close') {
         togglePlugin();
       }
@@ -179,6 +219,7 @@ const FCPlugin = ({ signerId, open }) => {
       {
         type: 'b-fc-initial-data',
         payload: {
+          uniqId,
           signerId: signerId || '',
           q: initialUrl,
           ...metadata,
@@ -189,7 +230,7 @@ const FCPlugin = ({ signerId, open }) => {
     setTimeout(() => {
       setLoaded(true);
     }, 500);
-  }, [initialUrl, signerId]);
+  }, [initialUrl, uniqId, signerId]);
   const onCancelClick = useCallback((e) => {
     e.stopPropagation();
     const element = document.getElementById('fc-plugin-confirm-modal');
@@ -224,30 +265,60 @@ const FCPlugin = ({ signerId, open }) => {
           onMouseEnter={showMenu}
           onMouseLeave={hideMenu}
         >
-          {(openMenu || openPlugin) && (
-            <div
-              className={`plugin-menu ${openPlugin ? 'plugin-menu-open' : ''}`}
-            >
-              <div className="b-menu-item">
-                <IconMenuToggle
-                  style={
-                    openPlugin ? { transform: 'rotate(180deg)' } : undefined
-                  }
-                />
-                <div className="menu-description">
-                  {openPlugin ? 'Minimize' : 'Open'}
-                </div>
-              </div>
-              <div className="b-menu-item" onClick={onCreateClick}>
-                <IconMenuPlus />
-                <div className="menu-description">New post</div>
-              </div>
-              <div className="b-menu-item" onClick={onCloseClick}>
-                <IconMenuClose />
-                <div className="menu-description">Close</div>
+          <div
+            className={`plugin-menu ${openPlugin ? 'plugin-menu-open' : ''}`}
+            style={{ display: openMenu || openPlugin ? 'flex' : 'none' }}
+          >
+            <div className="b-menu-item">
+              <IconMenuToggle
+                style={openPlugin ? { transform: 'rotate(180deg)' } : undefined}
+              />
+              <div className="menu-description">
+                {openPlugin ? 'Minimize' : 'Open'}
               </div>
             </div>
-          )}
+            <div className="b-menu-item" onClick={onCreateClick}>
+              <IconMenuPlus />
+              <div className="menu-description">New post</div>
+            </div>
+            <div
+              className="b-menu-item"
+              style={{
+                display: isWarpcast ? 'flex' : 'none',
+                '--color-icon': 'var(--color-primary-text)',
+                backgroundColor:
+                  isWarpcast && !initialUsername
+                    ? 'var(--color-background-5)'
+                    : 'unset',
+              }}
+              onClick={onDiscussionClick}
+              id="b-btn-discussion"
+            >
+              <IconDiscussion fill="var(--color-icon)" />
+              <div className="menu-description">Discussions</div>
+            </div>
+            <div
+              className="b-menu-item"
+              style={{
+                display: isWarpcast ? 'flex' : 'none',
+                '--color-icon': initialUsername
+                  ? 'var(--color-primary-text)'
+                  : 'var(--color-secondary-text)',
+                backgroundColor: initialUsername
+                  ? 'var(--color-background-5)'
+                  : 'unset',
+              }}
+              onClick={onInsightsClick}
+              id="b-btn-insights"
+            >
+              <IconMenuInsights fill="var(--color-icon)" />
+              <div className="menu-description">Profile Insight</div>
+            </div>
+            <div className="b-menu-item" onClick={onCloseClick}>
+              <IconMenuClose />
+              <div className="menu-description">Close</div>
+            </div>
+          </div>
           <div
             className={`btn-toggle ${
               castCount > 0 && alertCastCount && !openPlugin
@@ -288,7 +359,11 @@ const FCPlugin = ({ signerId, open }) => {
               margin: 0,
             }}
             title="b-fc-plugin"
-            src="https://buidler.app/plugin-fc"
+            src={
+              baseUrl +
+              'plugin-fc' +
+              (initialUsername ? `/insights/${initialUsername}` : '')
+            }
             id="fc-plugin-frame"
             onLoad={onLoadIframe}
             data-signer-id={dataSignerId}

@@ -29,6 +29,7 @@ const ModalCompose = ({ user }) => {
       embeds: [{ url: window.location.href }],
     };
     fcPluginFrame?.contentWindow?.postMessage?.({ type, payload }, '*');
+    setValue('');
     onCancelClick();
   }, [disabled, onCancelClick, value]);
   return (

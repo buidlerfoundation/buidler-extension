@@ -6,6 +6,13 @@ import FCPlugin from '../pages/Components/FCPlugin';
 import AlertItem from '../pages/Components/AlertItem';
 import TwitterAction from '../pages/Components/TwitterAction';
 import { getMetadata } from '../pages/Content/htmlParser';
+import ProfileInsights from '../pages/Components/ProfileInsights';
+import { host } from '../constant';
+
+export const apiBaseUrl = 'https://staging.api.buidler.app/';
+export const baseUrl = `https://${host}/`;
+export const regexUsername =
+  /^\/([a-zA-Z0-9.]+)(\/casts-and-replies|\/likes|\/channels)?$/;
 
 let lastVerticalPosition = 'bottom';
 let lastHorizontalPosition = 'right';
@@ -283,12 +290,75 @@ export const appendTwitterCastElement = () => {
   });
 };
 
+export const updateColorButtonDiscussion = (active) => {
+  const btnDiscussion = document.getElementById('b-btn-discussion');
+  if (btnDiscussion) {
+    btnDiscussion.style.setProperty(
+      '--color-icon',
+      active ? 'var(--color-primary-text)' : 'var(--color-secondary-text)'
+    );
+    if (active) {
+      btnDiscussion.style.backgroundColor = 'var(--color-background-5)';
+    } else {
+      btnDiscussion.style.backgroundColor = 'unset';
+    }
+  }
+};
+
+export const updateColorButtonInsights = (active) => {
+  const btnInsights = document.getElementById('b-btn-insights');
+  if (btnInsights) {
+    btnInsights.style.setProperty(
+      '--color-icon',
+      active ? 'var(--color-primary-text)' : 'var(--color-secondary-text)'
+    );
+    if (active) {
+      btnInsights.style.backgroundColor = 'var(--color-background-5)';
+    } else {
+      btnInsights.style.backgroundColor = 'unset';
+    }
+  }
+};
+
 export const handleTWChangeUrl = (url) => {
   updatedMetadata = false;
   const fcPluginFrame = getFCPluginFrame();
   const dataOpen = fcPluginFrame?.getAttribute('data-open');
   if (fcPluginFrame) {
+    const btnDiscussion = document.getElementById('b-btn-discussion');
+    const btnInsights = document.getElementById('b-btn-insights');
     const metadata = getMetadata();
+    let username = '';
+    if (url?.includes('https://warpcast.com')) {
+      const path = url.replace('https://warpcast.com', '');
+      username = regexUsername.exec(path)?.[1];
+      btnDiscussion.style.display = 'flex';
+      btnInsights.style.display = 'flex';
+    } else {
+      btnDiscussion.style.display = 'none';
+      btnInsights.style.display = 'none';
+    }
+    if (!username) {
+      fcPluginFrame?.contentWindow?.postMessage?.(
+        {
+          type: 'b-fc-navigate',
+          payload: '/plugin-fc',
+        },
+        '*'
+      );
+      updateColorButtonInsights(false);
+      updateColorButtonDiscussion(true);
+    } else {
+      fcPluginFrame?.contentWindow?.postMessage?.(
+        {
+          type: 'b-fc-navigate',
+          payload: `/plugin-fc/insights/${username}`,
+        },
+        '*'
+      );
+      updateColorButtonInsights(true);
+      updateColorButtonDiscussion(false);
+    }
     if (url?.includes('https://twitter.com')) {
       const twSidebar = document.querySelector(
         'div[data-testid="sidebarColumn"]'
@@ -361,6 +431,53 @@ const handleTWDialog = () => {
   }
 };
 
+export const appendProfileInsights = () => {
+  if (!document.getElementById('profile-insights')) {
+    const profileElement = document.querySelector('a[title*="Users followed"]')
+      ?.parentNode?.parentNode;
+    if (profileElement) {
+      const div = document.createElement('div');
+      div.id = 'profile-insights';
+      profileElement.appendChild(div);
+      const element = ReactDOM.createRoot(div);
+      element.render(<ProfileInsights />);
+    }
+  }
+};
+
+export const getWCUsername = () => {
+  if (window.location.origin === 'https://warpcast.com') {
+    const username = regexUsername.exec(window.location.pathname)?.[1];
+    return username;
+  }
+  return null;
+};
+
+export const injectWarpcastInsights = (path = window.location.pathname) => {
+  if (window.location.origin === 'https://warpcast.com') {
+    const username = regexUsername.exec(path)?.[1];
+    if (username) {
+      function onHTMLChange() {
+        appendProfileInsights();
+        if (document.getElementById('profile-insights')) {
+          document.documentElement.removeEventListener(
+            'DOMSubtreeModified',
+            onHTMLChange
+          );
+        }
+      }
+      document.documentElement.removeEventListener(
+        'DOMSubtreeModified',
+        onHTMLChange
+      );
+      document.documentElement.addEventListener(
+        'DOMSubtreeModified',
+        onHTMLChange
+      );
+    }
+  }
+};
+
 export const injectTwitterCast = () => {
   if (window.location.origin === 'https://twitter.com') {
     function onHTMLChange() {
@@ -411,7 +528,15 @@ export const injectFCPlugin = (params) => {
     e.stopPropagation();
   });
   const element = ReactDOM.createRoot(div);
-  element.render(<FCPlugin signerId={params?.signerId} />);
+  const username = getWCUsername();
+  element.render(
+    <FCPlugin
+      signerId={params?.signerId}
+      initialUsername={username}
+      uniqId={params?.uniqId}
+      isWarpcast={window.location.origin === 'https://warpcast.com'}
+    />
+  );
 };
 
 export const toggleBtnPlugin = () => {
@@ -430,15 +555,15 @@ export const getCountByUrls = (urls) => {
   urls.forEach((url) => {
     params.append('urls[]', url);
   });
-  return fetch(`https://prod.api.buidler.app/xcaster/counter/casts?${params}`);
+  return fetch(`${apiBaseUrl}counter/casts?${params}`);
 };
 
 export const getUsersByName = (name) => {
-  return fetch(`https://prod.api.buidler.app/users?username=${name}&limit=20`);
+  return fetch(`${apiBaseUrl}users?username=${name}&limit=20`);
 };
 
 export const updateMetadata = (payload) => {
-  fetch('https://prod.api.buidler.app/metadata/url', {
+  fetch(apiBaseUrl + 'metadata/url', {
     method: 'post',
     body: JSON.stringify(payload),
     headers: {
