@@ -31,6 +31,7 @@ import IconMenuInsights from './SVG/IconMenuInsights';
 
 const FCPlugin = ({ signerId, open, initialUsername, isWarpcast, uniqId }) => {
   const [openPlugin, setOpenPlugin] = useState(open === 'true');
+  const [channels, setChannels] = useState([]);
   const [originSrc, setOriginSrc] = useState('');
   const [alertCastCount, setAlertCastCount] = useState(false);
   const iframeRef = useRef();
@@ -56,6 +57,15 @@ const FCPlugin = ({ signerId, open, initialUsername, isWarpcast, uniqId }) => {
     []
   );
   const initialUrl = useMemo(() => window.location.href, []);
+  useEffect(() => {
+    fetch(apiBaseUrl + 'channels?limit=50').then((res) => {
+      res.json().then((data) => {
+        if (data.success) {
+          setChannels(data.data);
+        }
+      });
+    });
+  }, []);
   useEffect(() => {
     if (dataSignerId) {
       fetch(apiBaseUrl + 'users/me', {
@@ -394,7 +404,7 @@ const FCPlugin = ({ signerId, open, initialUsername, isWarpcast, uniqId }) => {
           </div>
         </div>
       </div>
-      {user && <ModalCompose user={user} />}
+      {user && <ModalCompose user={user} channels={channels} />}
       {user && (
         <ModalReply user={user} cast={parentCast} onClose={onCloseReply} />
       )}

@@ -16,7 +16,7 @@ const TwitterCast = ({ article, index, theme }) => {
     for (let aTag of aTags) {
       let href = aTag.getAttribute('href');
       // Gets the value of the href attribute
-      if (href.includes('/status/')) {
+      if (href.includes('/status/') && !href.includes('/photo')) {
         return href;
       }
     }
