@@ -9,7 +9,7 @@ import { getMetadata } from '../pages/Content/htmlParser';
 import ProfileInsights from '../pages/Components/ProfileInsights';
 import { host } from '../constant';
 
-export const apiBaseUrl = 'https://staging.api.buidler.app/';
+export const apiBaseUrl = 'https://prod.api.buidler.app/';
 export const baseUrl = `https://${host}/`;
 export const regexUsername =
   /^\/([a-zA-Z0-9.]+)(\/casts-and-replies|\/likes|\/channels)?$/;
