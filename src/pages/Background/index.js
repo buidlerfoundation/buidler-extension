@@ -5,6 +5,8 @@ const autoOffKey = 'Buidler_auto_off_plugin';
 const signerIdKey = 'Buidler_signer_id';
 const openPluginKey = 'Buidler_open_plugin';
 
+chrome.runtime.setUninstallURL('https://forms.gle/bPswAYF5VXttW9tH9');
+
 chrome.action.onClicked.addListener(async (tab) => {
   if (tab.url?.includes('http')) {
     // const res = await Caller.get('authentication/ott');
