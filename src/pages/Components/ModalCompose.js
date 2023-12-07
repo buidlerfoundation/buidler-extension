@@ -31,14 +31,14 @@ const ModalCompose = ({ user, channels }) => {
       text: value.trim(),
       embeds: [{ url: window.location.href }],
     };
-    if (selectedChannel?.descriptionUrl) {
-      payload.parent_url = selectedChannel?.descriptionUrl;
+    if (selectedChannel?.parent_url) {
+      payload.parent_url = selectedChannel?.parent_url;
     }
     fcPluginFrame?.contentWindow?.postMessage?.({ type, payload }, '*');
     setSelectedChannel(null);
     setValue('');
     onCancelClick();
-  }, [disabled, onCancelClick, selectedChannel?.descriptionUrl, value]);
+  }, [disabled, onCancelClick, selectedChannel?.parent_url, value]);
   const getPosition = useCallback(() => {
     if (!anchorPopup) return {};
     const rect = anchorPopup.getBoundingClientRect();
@@ -94,10 +94,10 @@ const ModalCompose = ({ user, channels }) => {
               }}
               onClick={(e) => setAnchorPopup(e.currentTarget)}
             >
-              {selectedChannel?.imageUrl ? (
+              {selectedChannel?.image ? (
                 <img
                   alt="channel"
-                  src={selectedChannel?.imageUrl}
+                  src={selectedChannel?.image}
                   style={{ width: 20, height: 20 }}
                 />
               ) : (
@@ -216,7 +216,7 @@ const ModalCompose = ({ user, channels }) => {
             </div>
             {channels.map((c) => (
               <div
-                key={c.key}
+                key={c.channel_id}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -231,7 +231,7 @@ const ModalCompose = ({ user, channels }) => {
               >
                 <img
                   alt="channel"
-                  src={c?.imageUrl}
+                  src={c?.image}
                   style={{ width: 20, height: 20 }}
                 />
                 <span
