@@ -1,5 +1,4 @@
 import { baseUrl, getUniqId, host } from '../../constant';
-import rules from './rules';
 
 const autoOffKey = 'Buidler_auto_off_plugin';
 const signerIdKey = 'Buidler_signer_id';
@@ -116,10 +115,10 @@ try {
   console.log(error);
 }
 
-chrome.declarativeNetRequest.updateDynamicRules({
-  removeRuleIds: rules.map((rule) => rule.id), // remove existing rules
-  addRules: rules,
-});
+// chrome.declarativeNetRequest.updateDynamicRules({
+//   removeRuleIds: rules.map((rule) => rule.id), // remove existing rules
+//   addRules: rules,
+// });
 
 // let microsecondsPerWeek = 1000 * 60 * 60 * 24 * 7;
 // let oneWeekAgo = new Date().getTime() - microsecondsPerWeek;

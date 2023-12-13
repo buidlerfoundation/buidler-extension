@@ -13,7 +13,6 @@
   "permissions": [
     "cookies",
     "storage",
-    "declarativeNetRequest",
     "webNavigation"
   ],
   "host_permissions": ["<all_urls>"],

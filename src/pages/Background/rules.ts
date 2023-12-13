@@ -1,7 +1,3 @@
-const allResourceTypes = Object.values(
-  chrome.declarativeNetRequest.ResourceType
-);
-
 const rules: any = [
   {
     id: 1,
