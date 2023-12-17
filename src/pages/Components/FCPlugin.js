@@ -10,6 +10,7 @@ import {
   apiBaseUrl,
   baseUrl,
   getCountByUrls,
+  getFCPlugin,
   getWCUsername,
   toggleModalCompose,
   toggleModalReply,
@@ -28,9 +29,11 @@ import ModalReply from './ModalReply';
 import ModalImage from './ModalImage';
 import IconDiscussion from './SVG/IconDiscussion';
 import IconMenuInsights from './SVG/IconMenuInsights';
+import ModalClose from './ModalClose';
 
 const FCPlugin = ({ signerId, open, initialUsername, isWarpcast, uniqId }) => {
   const [openPlugin, setOpenPlugin] = useState(open === 'true');
+  const [openClose, setOpenClose] = useState(false);
   const [channels, setChannels] = useState([]);
   const [originSrc, setOriginSrc] = useState('');
   const [alertCastCount, setAlertCastCount] = useState(false);
@@ -45,6 +48,10 @@ const FCPlugin = ({ signerId, open, initialUsername, isWarpcast, uniqId }) => {
   const castBadgeDisplay = useMemo(
     () => numeral(castCount).format('0[.][0]a'),
     [castCount]
+  );
+  const toggleClose = useCallback(
+    () => setOpenClose((current) => !current),
+    []
   );
   const showMenu = useCallback(() => setOpenMenu(true), []);
   const hideMenu = useCallback(() => setOpenMenu(false), []);
@@ -255,14 +262,16 @@ const FCPlugin = ({ signerId, open, initialUsername, isWarpcast, uniqId }) => {
     (e) => {
       e.stopPropagation();
       hideMenu();
-      setOpenPlugin(false);
-      const element = document.getElementById('btn-fc-plugin');
-      if (element) {
-        element.style.display = 'none';
-      }
+      toggleClose();
     },
-    [hideMenu]
+    [hideMenu, toggleClose]
   );
+  const onClosePlugin = useCallback(() => {
+    const existedPlugin = getFCPlugin();
+    if (existedPlugin) {
+      existedPlugin.style.display = 'none';
+    }
+  }, []);
   return (
     <>
       <div
@@ -409,6 +418,11 @@ const FCPlugin = ({ signerId, open, initialUsername, isWarpcast, uniqId }) => {
         <ModalReply user={user} cast={parentCast} onClose={onCloseReply} />
       )}
       <ModalImage src={originSrc} />
+      <ModalClose
+        open={openClose}
+        handleClose={toggleClose}
+        onClosePlugin={onClosePlugin}
+      />
     </>
   );
 };

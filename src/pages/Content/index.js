@@ -6,6 +6,7 @@ import {
   toggleBtnPlugin,
   handleEventClick,
   injectWarpcastInsights,
+  getFCPlugin,
 } from '../../utils';
 
 document.documentElement.setAttribute('buidler-extension', true);
@@ -22,6 +23,27 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
       open: msg?.openPlugin,
       uniqId: msg?.uniqId,
     });
+  }
+  if (msg?.type === 'show-plugin-from-popup') {
+    const existedPlugin = getFCPlugin();
+    if (!existedPlugin) {
+      chrome.runtime.sendMessage(
+        {
+          type: 'on-load',
+          url: window.location.href,
+          host: window.location.host,
+        },
+        (callback) => {}
+      );
+    } else {
+      existedPlugin.style.display = 'block';
+    }
+  }
+  if (msg?.type === 'hide-plugin-from-popup') {
+    const existedPlugin = getFCPlugin();
+    if (existedPlugin) {
+      existedPlugin.style.display = 'none';
+    }
   }
   if (msg?.type === 'on-frame-focus') {
     // on-frame-focus
@@ -43,6 +65,7 @@ chrome.runtime.sendMessage(
   {
     type: 'on-load',
     url: window.location.href,
+    host: window.location.host,
   },
   (callback) => {}
 );

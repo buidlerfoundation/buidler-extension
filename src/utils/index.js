@@ -195,7 +195,7 @@ export const getFCPluginFrame = () => {
   return document.querySelector('#fc-plugin-frame');
 };
 
-const getFCPlugin = () => {
+export const getFCPlugin = () => {
   return document.querySelector('#buidler-fc-plugin');
 };
 
@@ -484,7 +484,7 @@ export const injectTwitterCast = () => {
       // appendTwitterQuickCast();
       // appendTwitterQuickCastExpand();
       appendTwitterCastElement();
-      handleTWDialog();
+      // handleTWDialog();
       const metadata = getMetadata();
       if (
         metadata.icon &&
@@ -590,7 +590,7 @@ export const toggleModalReply = () => {
   }
 };
 
-const regexUrl =
+export const regexUrl =
   /((https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#(?&//=]*))/gim;
 
 const insertHttpIfNeed = (str) => {

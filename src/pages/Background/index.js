@@ -1,4 +1,11 @@
-import { baseUrl, getUniqId, host } from '../../constant';
+import {
+  baseUrl,
+  disabledDomainKey,
+  disabledSidebarKey,
+  getUniqId,
+  host,
+} from '../../constant';
+import { getCountByUrls } from '../../utils';
 
 const autoOffKey = 'Buidler_auto_off_plugin';
 const signerIdKey = 'Buidler_signer_id';
@@ -20,23 +27,58 @@ chrome.action.onClicked.addListener(async (tab) => {
   }
 });
 
+const updateBadge = (url, tabId) => {
+  getCountByUrls([url]).then((res) =>
+    res.json().then((data) => {
+      if (data.success) {
+        try {
+          const value = Object.values(data.data)?.[0] || 0;
+          chrome.action.setBadgeText({
+            text: value > 0 ? `${value}` : '',
+            tabId,
+          });
+        } catch (error) {}
+      }
+    })
+  );
+};
+
 try {
   chrome.runtime.onMessage.addListener(async (msg, sender, response) => {
     response();
     if (msg.type === 'on-load') {
-      const storageSignerId = await chrome.storage.local.get(signerIdKey);
-      const storageOpenPlugin = await chrome.storage.local.get(openPluginKey);
+      const storage = await chrome.storage.local.get([
+        signerIdKey,
+        openPluginKey,
+        disabledSidebarKey,
+        disabledDomainKey,
+      ]);
       const uniqId = await getUniqId();
-      const signerId = storageSignerId[signerIdKey];
-      const openPlugin = storageOpenPlugin[openPluginKey];
+      const signerId = storage[signerIdKey];
+      const openPlugin = storage[openPluginKey];
+      const disabled = storage[disabledSidebarKey]
+        ? JSON.parse(storage[disabledSidebarKey])
+        : false;
+      const disabledDomains = storage[disabledDomainKey]
+        ? storage[disabledDomainKey]?.split?.(',') || []
+        : [];
       if (sender?.tab?.id) {
-        chrome.tabs.sendMessage(
-          sender?.tab?.id,
-          { type: 'on-inject-iframe', signerId, openPlugin, uniqId },
-          (resCallback) => {
-            // handle call back
-          }
-        );
+        if (!disabled && !disabledDomains.includes(msg.host)) {
+          chrome.tabs.sendMessage(
+            sender?.tab?.id,
+            {
+              type: 'on-inject-iframe',
+              signerId,
+              openPlugin,
+              uniqId,
+            },
+            (resCallback) => {
+              // handle call back
+            }
+          );
+        } else {
+          updateBadge(msg.url, sender?.tab?.id);
+        }
       }
     }
     if (msg.type === 'buidler-plugin-set-cookie') {
@@ -99,6 +141,25 @@ try {
       });
     }
     if (changeInfo.url) {
+      chrome.storage.local
+        .get([disabledSidebarKey, disabledDomainKey])
+        .then((storage) => {
+          const host = new URL(changeInfo.url).host;
+          const disabled = storage[disabledSidebarKey]
+            ? JSON.parse(storage[disabledSidebarKey])
+            : false;
+          const disabledDomains = storage[disabledDomainKey]
+            ? storage[disabledDomainKey]?.split?.(',') || []
+            : [];
+          if (disabled || disabledDomains.includes(host)) {
+            updateBadge(changeInfo.url, tabId);
+          } else {
+            chrome.action.setBadgeText({
+              text: '',
+              tabId,
+            });
+          }
+        });
       chrome.tabs.sendMessage(
         tabId,
         {
